@@ -1,0 +1,513 @@
+#!/usr/bin/env python3
+"""
+Generate PDF report from QA validation results.
+
+Usage:
+    python generate_pdf_report.py <estimate_json> <issues_dir> [--output <output_path>]
+"""
+
+import sys
+import json
+import os
+from pathlib import Path
+from datetime import datetime
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
+from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT
+
+
+def load_json(file_path):
+    """Load and parse JSON file."""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+
+def load_all_issues(issues_dir, estimate_id):
+    """Load all issue JSON files for an estimate."""
+    issues_data = {
+        'disallowed': None,
+        'quantities': None,
+        'depreciation': None,
+        'f9_notes': None,
+        'observations': None
+    }
+
+    issues_path = Path(issues_dir)
+    if not issues_path.exists():
+        return issues_data
+
+    # Load disallowed items
+    disallowed_file = issues_path / f'disallowed_{estimate_id}.json'
+    if disallowed_file.exists():
+        issues_data['disallowed'] = load_json(disallowed_file)
+
+    # Load quantity limits
+    quantities_file = issues_path / f'quantities_{estimate_id}.json'
+    if quantities_file.exists():
+        issues_data['quantities'] = load_json(quantities_file)
+
+    # Load depreciation (future)
+    depreciation_file = issues_path / f'depreciation_{estimate_id}.json'
+    if depreciation_file.exists():
+        issues_data['depreciation'] = load_json(depreciation_file)
+
+    # Load F9 notes
+    f9_notes_file = issues_path / f'f9_notes_{estimate_id}.json'
+    if f9_notes_file.exists():
+        issues_data['f9_notes'] = load_json(f9_notes_file)
+
+    # Load observations
+    observations_file = issues_path / f'observations_{estimate_id}.json'
+    if observations_file.exists():
+        issues_data['observations'] = load_json(observations_file)
+
+    return issues_data
+
+
+def generate_pdf_report(estimate_json, issues_data, output_path):
+    """Generate PDF report from estimate and issues data."""
+
+    # Create PDF document
+    doc = SimpleDocTemplate(
+        output_path,
+        pagesize=letter,
+        rightMargin=0.75*inch,
+        leftMargin=0.75*inch,
+        topMargin=1*inch,
+        bottomMargin=0.75*inch
+    )
+
+    # Container for PDF elements
+    story = []
+
+    # Get styles
+    styles = getSampleStyleSheet()
+
+    # Custom styles
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=24,
+        textColor=colors.HexColor('#1a1a1a'),
+        spaceAfter=30,
+        alignment=TA_CENTER
+    )
+
+    heading_style = ParagraphStyle(
+        'CustomHeading',
+        parent=styles['Heading2'],
+        fontSize=16,
+        textColor=colors.HexColor('#2c5aa0'),
+        spaceAfter=12,
+        spaceBefore=20
+    )
+
+    subheading_style = ParagraphStyle(
+        'CustomSubHeading',
+        parent=styles['Heading3'],
+        fontSize=14,
+        textColor=colors.HexColor('#333333'),
+        spaceAfter=10,
+        spaceBefore=15
+    )
+
+    normal_style = styles['Normal']
+
+    # Extract data
+    estimate_id = estimate_json.get('estimate_id', 'Unknown')
+    client = estimate_json.get('metadata', {}).get('client', 'Unknown')
+    date = estimate_json.get('metadata', {}).get('date', 'Unknown')
+
+    # Get carrier from issues
+    carrier = "Unknown"
+    for issue_type, data in issues_data.items():
+        if data and 'carrier' in data:
+            carrier = data['carrier']
+            break
+
+    # Calculate totals
+    total_issues = 0
+    disallowed_count = 0
+    quantities_count = 0
+    f9_notes_count = 0
+    observations_count = 0
+
+    if issues_data['disallowed']:
+        disallowed_count = issues_data['disallowed'].get('issues_found', 0)
+        total_issues += disallowed_count
+
+    if issues_data['quantities']:
+        quantities_count = issues_data['quantities'].get('issues_found', 0)
+        total_issues += quantities_count
+
+    if issues_data['f9_notes']:
+        f9_notes_count = issues_data['f9_notes'].get('f9_notes_required', 0)
+
+    if issues_data['observations']:
+        observations_count = issues_data['observations'].get('observations_found', 0)
+
+    # Estimate totals
+    summary = estimate_json.get('summary', {})
+    line_item_total = summary.get('line_item_total', 0)
+    overhead = summary.get('overhead', 0)
+    profit = summary.get('profit', 0)
+    rcv_total = line_item_total + overhead + profit
+
+    # Title
+    story.append(Paragraph(f"QA Review Report", title_style))
+    story.append(Spacer(1, 0.2*inch))
+
+    # Header info table
+    header_data = [
+        ['Estimate ID:', estimate_id, 'Client:', client],
+        ['Estimate Date:', date, 'Review Date:', datetime.now().strftime('%Y-%m-%d')],
+        ['Carrier:', carrier, 'Original Total:', f'${rcv_total:,.2f}']
+    ]
+
+    header_table = Table(header_data, colWidths=[1.2*inch, 2*inch, 1.2*inch, 2*inch])
+    header_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f0f0f0')),
+        ('BACKGROUND', (2, 0), (2, -1), colors.HexColor('#f0f0f0')),
+        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+        ('FONTNAME', (2, 0), (2, -1), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ]))
+    story.append(header_table)
+    story.append(Spacer(1, 0.3*inch))
+
+    # Summary Section
+    story.append(Paragraph("Summary", heading_style))
+
+    summary_data = [
+        ['Total Issues Found:', str(total_issues)],
+        ['Disallowed Items:', str(disallowed_count)],
+        ['Quantity Violations:', str(quantities_count)],
+        ['Depreciation Errors:', '0'],
+        ['F9 Notes Required:', str(f9_notes_count)],
+        ['Observations:', str(observations_count)]
+    ]
+
+    summary_table = Table(summary_data, colWidths=[3*inch, 3.5*inch])
+    summary_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#e8f4f8')),
+        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+        ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+        ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+        ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 11),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ]))
+    story.append(summary_table)
+    story.append(Spacer(1, 0.3*inch))
+
+    # Issues Detail
+    if total_issues == 0:
+        # No issues found
+        story.append(Paragraph("Results", heading_style))
+
+        result_text = Paragraph(
+            '<para align="center" backColor="#d4edda" borderColor="#c3e6cb" '
+            'borderWidth="1" borderPadding="10" fontSize="12">'
+            '<b>[OK]</b> No issues found - estimate appears compliant with carrier guidelines.'
+            '</para>',
+            normal_style
+        )
+        story.append(result_text)
+    else:
+        # Disallowed items section
+        if disallowed_count > 0:
+            story.append(Paragraph("1. Disallowed Items", heading_style))
+            story.append(Paragraph(
+                f"Found {disallowed_count} line item(s) that may violate carrier guidelines:",
+                normal_style
+            ))
+            story.append(Spacer(1, 0.15*inch))
+
+            for idx, issue in enumerate(issues_data['disallowed']['issues'], start=1):
+                story.append(Paragraph(f"Issue #{idx}: {issue['description']}", subheading_style))
+
+                issue_data = [
+                    ['Line Item:', f"#{issue['line_item']}"],
+                    ['Category:', issue.get('category', 'N/A')],
+                    ['Amount:', f"${issue['total']:.2f}"],
+                    ['Confidence:', f"{issue['confidence']}%"],
+                    ['Reason:', Paragraph(issue['reason'], normal_style)],
+                    ['Recommendation:', Paragraph(issue['recommendation'], normal_style)],
+                    ['Reference:', issue['guideline_reference']]
+                ]
+
+                issue_table = Table(issue_data, colWidths=[1.5*inch, 5*inch])
+                issue_table.setStyle(TableStyle([
+                    ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#fff3cd')),
+                    ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+                    ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+                    ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+                    ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+                    ('FONTSIZE', (0, 0), (-1, -1), 9),
+                    ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                    ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ]))
+                story.append(issue_table)
+                story.append(Spacer(1, 0.2*inch))
+
+        # Quantity limits section
+        if quantities_count > 0:
+            story.append(Paragraph("2. Quantity Limit Violations", heading_style))
+            story.append(Paragraph(
+                f"Found {quantities_count} line item(s) that exceed carrier quantity limits:",
+                normal_style
+            ))
+            story.append(Spacer(1, 0.15*inch))
+
+            for idx, issue in enumerate(issues_data['quantities']['issues'], start=1):
+                story.append(Paragraph(f"Issue #{idx}: {issue['description']}", subheading_style))
+
+                issue_data = [
+                    ['Line Item:', f"#{issue['line_item']}"],
+                    ['Category:', issue.get('category', 'N/A')],
+                    ['Amount:', f"${issue['total']:.2f}"],
+                    ['Max Allowed:', f"{issue['max_allowed']} {issue.get('unit', 'units')}"],
+                    ['Excess:', str(issue['excess'])],
+                    ['Reason:', Paragraph(issue['reason'], normal_style)],
+                    ['Recommendation:', Paragraph(issue['recommendation'], normal_style)]
+                ]
+
+                issue_table = Table(issue_data, colWidths=[1.5*inch, 5*inch])
+                issue_table.setStyle(TableStyle([
+                    ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#fff3cd')),
+                    ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+                    ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+                    ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+                    ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+                    ('FONTSIZE', (0, 0), (-1, -1), 9),
+                    ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                    ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ]))
+                story.append(issue_table)
+                story.append(Spacer(1, 0.2*inch))
+
+    # F9 Notes section - ALWAYS show if there are F9 notes
+    if f9_notes_count > 0:
+        story.append(PageBreak())
+        story.append(Paragraph("3. F9 Note Requirements", heading_style))
+        story.append(Paragraph(
+            f"Found {f9_notes_count} line item(s) that require F9 notes in Xactimate:",
+            normal_style
+        ))
+        story.append(Spacer(1, 0.15*inch))
+
+        # Create table header
+        f9_table_data = [
+            ['Line #', 'Description', 'Requirement', 'Recommended Note']
+        ]
+
+        # Add each F9 note requirement
+        for flag in issues_data['f9_notes']['flags']:
+            f9_table_data.append([
+                f"#{flag['line_item']}",
+                Paragraph(flag['description'], normal_style),
+                Paragraph(flag['requirement'], normal_style),
+                Paragraph(flag['recommended_note'], normal_style)
+            ])
+
+        f9_table = Table(f9_table_data, colWidths=[0.6*inch, 2.2*inch, 1.8*inch, 2*inch])
+        f9_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2c5aa0')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 9),
+            ('FONTSIZE', (0, 1), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#e8f4f8')),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.HexColor('#e8f4f8'), colors.white])
+        ]))
+        story.append(f9_table)
+        story.append(Spacer(1, 0.3*inch))
+
+    # Observations section - ALWAYS show if there are observations
+    if observations_count > 0:
+        if f9_notes_count == 0:
+            story.append(PageBreak())
+        story.append(Paragraph("4. Observations Worth Noting", heading_style))
+        story.append(Paragraph(
+            f"Found {observations_count} line item(s) worth reviewing (non-violations):",
+            normal_style
+        ))
+        story.append(Spacer(1, 0.15*inch))
+
+        # Create table header
+        obs_table_data = [
+            ['Line #', 'Description', 'Observation', 'Recommendation']
+        ]
+
+        # Add each observation
+        for obs in issues_data['observations']['observations']:
+            obs_table_data.append([
+                f"#{obs['line_item']}",
+                Paragraph(obs['description'], normal_style),
+                Paragraph(obs['reason'], normal_style),
+                Paragraph(obs['recommendation'], normal_style)
+            ])
+
+        obs_table = Table(obs_table_data, colWidths=[0.6*inch, 2.2*inch, 2*inch, 1.8*inch])
+        obs_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#808080')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 9),
+            ('FONTSIZE', (0, 1), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f5f5f5')),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.HexColor('#f5f5f5'), colors.white])
+        ]))
+        story.append(obs_table)
+        story.append(Spacer(1, 0.3*inch))
+
+    # Recommended actions - only if there are actual issues
+    if total_issues > 0:
+        story.append(PageBreak())
+        story.append(Paragraph("Recommended Actions", heading_style))
+
+        action_num = 1
+        total_adjustment = 0
+
+        # Actions from disallowed items
+        if disallowed_count > 0:
+            for issue in issues_data['disallowed']['issues']:
+                action = issue.get('action', 'review')
+                if action == 'remove':
+                    action_text = f"{action_num}. <b>Remove</b> line item #{issue['line_item']}: {issue['description']}<br/>   - Saves: ${issue['total']:.2f}"
+                    total_adjustment += issue['total']
+                else:
+                    action_text = f"{action_num}. <b>Review with adjuster</b> line item #{issue['line_item']}: {issue['description']}<br/>   - Potential adjustment: ${issue['total']:.2f}"
+
+                story.append(Paragraph(action_text, normal_style))
+                story.append(Spacer(1, 0.1*inch))
+                action_num += 1
+
+        # Summary of adjustments
+        if total_adjustment > 0:
+            revised_total = rcv_total - total_adjustment
+
+            adjustment_data = [
+                ['Total Recommended Adjustment:', f'-${total_adjustment:.2f}'],
+                ['Revised Estimate Total:', f'${revised_total:,.2f}']
+            ]
+
+            story.append(Spacer(1, 0.2*inch))
+            adjustment_table = Table(adjustment_data, colWidths=[3.5*inch, 3*inch])
+            adjustment_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#d4edda')),
+                ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+                ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+                ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 12),
+                ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#28a745')),
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ]))
+            story.append(adjustment_table)
+
+    # Footer
+    story.append(Spacer(1, 0.5*inch))
+    footer_style = ParagraphStyle(
+        'Footer',
+        parent=normal_style,
+        fontSize=9,
+        textColor=colors.grey,
+        alignment=TA_CENTER
+    )
+    story.append(Paragraph("_" * 100, footer_style))
+    story.append(Spacer(1, 0.1*inch))
+    story.append(Paragraph(
+        "<i>This report was generated automatically by the QA Reconstruction Estimate Automation system.</i><br/>"
+        "<i>Always verify recommendations with carrier guidelines and adjuster before finalizing changes.</i>",
+        footer_style
+    ))
+
+    # Build PDF
+    doc.build(story)
+
+
+def main():
+    """Main function."""
+    if len(sys.argv) < 3:
+        print("Usage: python generate_pdf_report.py <estimate_json> <issues_dir> [--output <output_path>]")
+        sys.exit(1)
+
+    estimate_path = sys.argv[1]
+    issues_dir = sys.argv[2]
+
+    # Check if output path is specified
+    output_path = None
+    if '--output' in sys.argv:
+        output_idx = sys.argv.index('--output')
+        if output_idx + 1 < len(sys.argv):
+            output_path = sys.argv[output_idx + 1]
+
+    # Validate input files
+    if not os.path.exists(estimate_path):
+        print(f"Error: Estimate file not found: {estimate_path}")
+        sys.exit(1)
+
+    if not os.path.exists(issues_dir):
+        print(f"Error: Issues directory not found: {issues_dir}")
+        sys.exit(1)
+
+    print(f"Loading estimate: {estimate_path}")
+    print(f"Loading issues from: {issues_dir}\n")
+
+    try:
+        # Load data
+        estimate_json = load_json(estimate_path)
+        estimate_id = estimate_json.get('estimate_id', 'unknown')
+        issues_data = load_all_issues(issues_dir, estimate_id)
+
+        # Determine output path
+        if not output_path:
+            output_dir = Path('.tmp/reports')
+            output_dir.mkdir(parents=True, exist_ok=True)
+            date_str = datetime.now().strftime('%Y%m%d')
+            output_path = output_dir / f'qa_report_{estimate_id}_{date_str}.pdf'
+
+        # Generate PDF report
+        print("Generating PDF report...")
+        generate_pdf_report(estimate_json, issues_data, str(output_path))
+
+        print(f"\nPDF report generated successfully!")
+        print(f"Output saved to: {output_path}")
+
+        # Print summary
+        total_issues = sum([
+            issues_data['disallowed'].get('issues_found', 0) if issues_data['disallowed'] else 0,
+            issues_data['quantities'].get('issues_found', 0) if issues_data['quantities'] else 0
+        ])
+
+        print(f"Total issues in report: {total_issues}")
+
+        return output_path
+
+    except Exception as e:
+        print(f"Error generating PDF: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()
