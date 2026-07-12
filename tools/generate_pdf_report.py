@@ -307,7 +307,7 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
 
         # Create table header
         f9_table_data = [
-            ['Line #', 'Description', 'Requirement', 'Recommended Note']
+            ['Line #', 'Description', 'Requirement', 'Recommended Note', 'Guideline Ref']
         ]
 
         # Add each F9 note requirement
@@ -316,10 +316,11 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
                 f"#{flag['line_item']}",
                 Paragraph(flag['description'], normal_style),
                 Paragraph(flag['requirement'], normal_style),
-                Paragraph(flag['recommended_note'], normal_style)
+                Paragraph(flag['recommended_note'], normal_style),
+                Paragraph(flag.get('guideline_reference', 'N/A'), normal_style)
             ])
 
-        f9_table = Table(f9_table_data, colWidths=[0.6*inch, 2.2*inch, 1.8*inch, 2*inch])
+        f9_table = Table(f9_table_data, colWidths=[0.5*inch, 1.9*inch, 1.6*inch, 1.9*inch, 0.9*inch])
         f9_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2c5aa0')),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -349,7 +350,7 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
 
         # Create table header
         obs_table_data = [
-            ['Line #', 'Description', 'Observation', 'Recommendation']
+            ['Line #', 'Description', 'Observation', 'Recommendation', 'Guideline Ref']
         ]
 
         # Add each observation
@@ -358,10 +359,11 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
                 f"#{obs['line_item']}",
                 Paragraph(obs['description'], normal_style),
                 Paragraph(obs['reason'], normal_style),
-                Paragraph(obs['recommendation'], normal_style)
+                Paragraph(obs['recommendation'], normal_style),
+                Paragraph(obs.get('guideline_reference', 'N/A'), normal_style)
             ])
 
-        obs_table = Table(obs_table_data, colWidths=[0.6*inch, 2.2*inch, 2*inch, 1.8*inch])
+        obs_table = Table(obs_table_data, colWidths=[0.5*inch, 1.9*inch, 1.7*inch, 1.6*inch, 0.9*inch])
         obs_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#808080')),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
