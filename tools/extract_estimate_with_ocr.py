@@ -182,6 +182,7 @@ CODE_PREFIX_CATEGORIES = {
     'ELE': 'ELECTRICAL',
     'HVC': 'HVAC',
     'CLN': 'CLEANING',
+    'FNH': 'OTHER',
     'LAB': 'GENERAL',
 }
 
