@@ -21,8 +21,13 @@ import fitz  # PyMuPDF
 from PIL import Image
 import io
 
-# Set tesseract path (Windows default installation)
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# On Windows, point pytesseract at the default Tesseract install location.
+# On Linux (e.g. Streamlit Cloud), Tesseract is installed via packages.txt
+# and is already on PATH, so leave pytesseract's default lookup alone.
+if sys.platform == 'win32':
+    _default_windows_tesseract = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+    if os.path.exists(_default_windows_tesseract):
+        pytesseract.pytesseract.tesseract_cmd = _default_windows_tesseract
 
 
 def extract_text_with_ocr(pdf_path, start_page=0, end_page=None):
