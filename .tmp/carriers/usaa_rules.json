@@ -188,7 +188,11 @@
       "severity": "info",
       "reason": "Sealant is typically applied for new drywall, stained areas, or areas to be textured",
       "recommendation": "Verify sealant is only applied where necessary",
-      "guideline_reference": "Page 16"
+      "guideline_reference": "Page 16",
+      "suppress_if_room_contains": {
+        "component_keywords": ["drywall", "baseboard"],
+        "action_keywords": ["r&r", "replace", "replacement", "remove"]
+      }
     },
     {
       "rule_id": "USAA_OBS_004",
