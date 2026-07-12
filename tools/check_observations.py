@@ -23,7 +23,41 @@ def load_json(file_path):
         return json.load(f)
 
 
-def check_observations(line_item, observation_rules, estimate_id):
+def build_room_index(line_items):
+    """Group line item descriptions (lowercased) by the room they belong to."""
+    room_index = {}
+    for item in line_items:
+        room = item.get('room', 'Unknown')
+        room_index.setdefault(room, []).append(item)
+    return room_index
+
+
+def has_suppression_context(line_item, room_index, suppression_rule):
+    """Check if another item in the same room justifies skipping this observation.
+
+    E.g. a "paint undamaged trim" observation shouldn't fire if the same room
+    also has a door/frame/window R&R or replacement line item - that's the
+    context that makes painting the trim expected, not questionable.
+    """
+    room = line_item.get('room', 'Unknown')
+    if room == 'Unknown':
+        return False
+
+    component_keywords = suppression_rule.get('component_keywords', [])
+    action_keywords = suppression_rule.get('action_keywords', [])
+
+    for other in room_index.get(room, []):
+        if other is line_item:
+            continue
+        other_desc = other['description'].lower()
+        if any(c in other_desc for c in component_keywords) and \
+           any(a in other_desc for a in action_keywords):
+            return True
+
+    return False
+
+
+def check_observations(line_item, observation_rules, estimate_id, room_index=None):
     """Check if a line item has observations worth noting."""
     observations = []
 
@@ -50,6 +84,11 @@ def check_observations(line_item, observation_rules, estimate_id):
                 match_found = True
                 matched_pattern = pattern
                 break
+
+        suppression_rule = rule.get('suppress_if_room_contains')
+        if match_found and suppression_rule and room_index is not None:
+            if has_suppression_context(line_item, room_index, suppression_rule):
+                match_found = False
 
         if match_found:
             observation = {
@@ -115,9 +154,10 @@ def main():
         print(f"Observation rules to apply: {len(observation_rules)}\n")
 
         # Check each line item
+        room_index = build_room_index(line_items)
         all_observations = []
         for line_item in line_items:
-            observations = check_observations(line_item, observation_rules, estimate_id)
+            observations = check_observations(line_item, observation_rules, estimate_id, room_index)
             all_observations.extend(observations)
 
         # Create output structure

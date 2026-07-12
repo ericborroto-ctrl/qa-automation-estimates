@@ -86,9 +86,31 @@ def extract_line_items_from_text(text, estimate_id):
     # Line 1: 169. TIL SWR>+ & R&R Tile shower - 101 to 120 SF - High grade
     # Line 2: 1 1.00 EA 387.11+ 3,481.63 = 85.22 790.78 4,744.74
 
+    # Room boundaries are marked by a "Totals: <Room Name> <o&p> <total>" line
+    # once every item in that room has been listed (the final level-wide
+    # rollup uses the singular "Total:"). The room-name text that appears
+    # where a room *starts* is overlaid on the room's sketch diagram in the
+    # source PDF and OCRs unreliably, so instead of parsing that we
+    # retroactively tag each pending item once its room's totals line is
+    # found - that text isn't overlaid on the diagram and OCRs cleanly.
+    total_pattern = re.compile(
+        r'^Totals?:\s*(.+?)\s+[\d,]+\.\d{2}\s+[\d,]+\.\d{2}\s+[\d,]+\.\d{2}\s*$'
+    )
+    pending_items = []
+
     i = 0
     while i < len(lines):
         line = lines[i].strip()
+
+        total_match = total_pattern.match(line)
+        if total_match:
+            room_name = total_match.group(1).strip()
+            if room_name and not any(ch.isdigit() for ch in room_name):
+                for pending_item in pending_items:
+                    pending_item['room'] = room_name
+                pending_items = []
+            i += 1
+            continue
 
         # Look for line number and description pattern
         desc_pattern = r'^(\d+)\.\s+([A-Z]{2,}[^0-9]+.+?)$'
@@ -123,10 +145,12 @@ def extract_line_items_from_text(text, estimate_id):
                         'unit': unit,
                         'unit_price': float(unit_price),
                         'total': float(total),
-                        'category': category
+                        'category': category,
+                        'room': 'Unknown'
                     }
 
                     line_items.append(line_item)
+                    pending_items.append(line_item)
                     i += 2  # Skip next line since we processed it
                     continue
                 except (ValueError, IndexError):

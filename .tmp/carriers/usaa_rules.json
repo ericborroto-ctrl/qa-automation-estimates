@@ -164,7 +164,11 @@
       "severity": "info",
       "reason": "Semi-Gloss and High Gloss painted baseboards, door, window, and door trim, etc. should not be painted if not damaged",
       "recommendation": "Review if undamaged trim is included in paint scope",
-      "guideline_reference": "Page 16"
+      "guideline_reference": "Page 16",
+      "suppress_if_room_contains": {
+        "component_keywords": ["door", "frame", "jamb", "window"],
+        "action_keywords": ["r&r", "replace", "replacement"]
+      }
     },
     {
       "rule_id": "USAA_OBS_002",
