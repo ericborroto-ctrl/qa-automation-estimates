@@ -5,7 +5,7 @@ Compare Xactimate reconstruction estimates against insurance carrier guidelines 
 
 ## Required Inputs
 1. **Estimate PDF**: Xactimate export in standard format (text-based, not scanned)
-2. **Carrier Name**: Insurance company for this claim (e.g., "State Farm", "Allstate", "USAA")
+2. **Carrier Name**: Insurance company for this claim (currently "USAA"; additional carriers planned)
 3. **Carrier Guidelines**: Pre-loaded JSON rules file in `.tmp/carriers/[carrier]_rules.json`
 
 ## Tools Used
@@ -42,7 +42,7 @@ python tools/extract_estimate_line_items.py "<estimate_pdf_path>"
 
 **Command:**
 ```bash
-python tools/check_disallowed_items.py ".tmp/estimates/<estimate_id>_line_items.json" ".tmp/carriers/state_farm_rules.json"
+python tools/check_disallowed_items.py ".tmp/estimates/<estimate_id>_line_items.json" ".tmp/carriers/usaa_rules.json"
 ```
 
 **What it does:**
@@ -67,7 +67,7 @@ python tools/check_disallowed_items.py ".tmp/estimates/<estimate_id>_line_items.
 
 **Command:**
 ```bash
-python tools/check_quantity_limits.py ".tmp/estimates/<estimate_id>_line_items.json" ".tmp/carriers/state_farm_rules.json"
+python tools/check_quantity_limits.py ".tmp/estimates/<estimate_id>_line_items.json" ".tmp/carriers/usaa_rules.json"
 ```
 
 **What it does:**
@@ -163,7 +163,7 @@ python tools/generate_qa_report.py ".tmp/estimates/<estimate_id>_line_items.json
 **Solutions:**
 1. Adjust confidence threshold: Run with `--confidence 85` to require higher matches
 2. Review carrier rules JSON - patterns may be too broad
-3. Refine item patterns in `state_farm_rules.json` to be more specific
+3. Refine item patterns in `usaa_rules.json` to be more specific
 4. Add exceptions or category filters to rules
 
 ---
@@ -175,7 +175,7 @@ python tools/generate_qa_report.py ".tmp/estimates/<estimate_id>_line_items.json
 **Solution:**
 1. Check if `.tmp/carriers/<carrier>_rules.json` exists
 2. If missing, create using template from existing rules file
-3. Populate with carrier-specific rules (see State Farm rules as example)
+3. Populate with carrier-specific rules (see `usaa_rules.json` as example)
 4. One-time setup per carrier, reusable for all estimates
 
 ---
@@ -203,11 +203,11 @@ python tools/extract_estimate_line_items.py "CLAUDE_TEST_ABBREVIATED_CON.pdf"
 # Output: Line items extracted: 8
 
 # Step 2: Check disallowed items
-python tools/check_disallowed_items.py ".tmp/estimates/ABBREVIATED_line_items.json" ".tmp/carriers/state_farm_rules.json"
+python tools/check_disallowed_items.py ".tmp/estimates/ABBREVIATED_line_items.json" ".tmp/carriers/usaa_rules.json"
 # Output: Issues found: 1
 
 # Step 3: Check quantity limits
-python tools/check_quantity_limits.py ".tmp/estimates/ABBREVIATED_line_items.json" ".tmp/carriers/state_farm_rules.json"
+python tools/check_quantity_limits.py ".tmp/estimates/ABBREVIATED_line_items.json" ".tmp/carriers/usaa_rules.json"
 # Output: Issues found: 0
 
 # Step 4: Generate report

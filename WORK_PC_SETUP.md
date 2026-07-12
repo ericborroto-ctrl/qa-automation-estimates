@@ -186,9 +186,8 @@ qa-automation-estimates/
 │   ├── check_f9_notes.py
 │   ├── check_observations.py
 │   └── generate_pdf_report.py
-└── .tmp/carriers/                 # Carrier rules (USAA, State Farm)
-    ├── usaa_rules.json
-    └── state_farm_rules.json
+└── .tmp/carriers/                 # Carrier rules (USAA only for now)
+    └── usaa_rules.json
 ```
 
 ---

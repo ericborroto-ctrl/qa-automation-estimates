@@ -65,7 +65,7 @@ with st.sidebar:
 
     carrier = st.selectbox(
         "Select Carrier",
-        ["USAA", "State Farm"],
+        ["USAA"],
         help="Choose the insurance carrier for validation"
     )
 

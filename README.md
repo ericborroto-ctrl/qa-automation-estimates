@@ -5,7 +5,7 @@ Automated QA validation for Xactimate reconstruction estimates against insurance
 ## Features
 
 - 🔍 **Automated Line Item Extraction** - OCR support for scanned PDFs
-- ✅ **Carrier-Specific Validation** - USAA, State Farm guidelines
+- ✅ **Carrier-Specific Validation** - USAA guidelines (additional carriers planned)
 - 📝 **F9 Note Recommendations** - Suggested documentation text
 - 📊 **Professional PDF Reports** - Detailed validation reports
 - 🌐 **Web Interface** - Access from any browser
@@ -42,6 +42,6 @@ streamlit run app.py
 ## Usage
 
 1. Upload an estimate PDF
-2. Select carrier (USAA or State Farm)
+2. Select carrier (USAA)
 3. Click "Run QA Analysis"
 4. Download the PDF report
