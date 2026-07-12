@@ -81,7 +81,7 @@
       "reason": "All PDRP contractors will place an F9 NOTE on the applicable line item(s) indicating that line item & measurement is for a partial repair/replacement ONLY",
       "required_info": "Indicate which slope/area/room/elevation where damage is located",
       "recommended_note": "This line item is for partial repair/replacement ONLY. Damage located at [specify location/area].",
-      "guideline_reference": "Page 9"
+      "guideline_reference": "Page 8"
     },
     {
       "rule_id": "USAA_F9_002",
@@ -111,7 +111,7 @@
       "reason": "If additional masking line items are used for drywall work, demo, etc., provide F9 note for explanation",
       "required_info": "Explain why additional masking is required beyond standard painting work",
       "recommended_note": "Additional masking required due to [reason - e.g., extensive drywall work, demolition, overspray protection]. See photos.",
-      "guideline_reference": "Page 17"
+      "guideline_reference": "Page 18"
     },
     {
       "rule_id": "USAA_F9_005",
@@ -121,7 +121,7 @@
       "reason": "Plumbing components (supply lines, p-traps, fixtures, etc.) are typically reusable and may not require resetting when undamaged by the covered peril. Allowance to replace or detach/reset undamaged components should be documented (photos and F9 note) when not evident by the repair methodology",
       "required_info": "Explain why undamaged component needs to be detached/reset or replaced",
       "recommended_note": "Undamaged plumbing component requires detach/reset due to [reason - e.g., access for repairs, age/condition makes reuse not feasible]. See photos.",
-      "guideline_reference": "Page 17"
+      "guideline_reference": "Page 18"
     },
     {
       "rule_id": "USAA_F9_006",
@@ -141,7 +141,7 @@
       "reason": "Cost for initial set up is permissible; based on amount of equipment needed and should be documented with F9 notes",
       "required_info": "Document the type and amount of equipment set up",
       "recommended_note": "Initial setup for [number] dehumidifiers, [number] air movers, and [other equipment] to dry affected areas. See equipment log.",
-      "guideline_reference": "Page 26"
+      "guideline_reference": "Page 25"
     },
     {
       "rule_id": "USAA_F9_008",
@@ -151,7 +151,7 @@
       "reason": "If contractor is replacing carpet pad when only the carpet is damaged (no damage to existing carpet pad), they should support the recommendation in XactAnalysis Notes",
       "required_info": "Age of carpet/pad, traffic level, and uniform appearance assessment",
       "recommended_note": "Carpet pad replacement recommended. Carpet is [age] years old in high-traffic area. Replacing only carpet without pad would result in non-uniform appearance due to [reason].",
-      "guideline_reference": "Page 13"
+      "guideline_reference": "Page 12"
     }
   ],
 
