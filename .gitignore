@@ -4,7 +4,9 @@ credentials.json
 token.json
 
 # Temporary files
-.tmp/
+.tmp/*
+!.tmp/carriers/
+!.tmp/carriers/*.json
 
 # Python
 __pycache__/
