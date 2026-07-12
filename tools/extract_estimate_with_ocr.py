@@ -177,6 +177,7 @@ CODE_PREFIX_CATEGORIES = {
     'CPT': 'FLOORING',
     'RFG': 'ROOFING',
     'SDG': 'SIDING',
+    'STU': 'SIDING',
     'PLM': 'PLUMBING',
     'ELE': 'ELECTRICAL',
     'HVC': 'HVAC',

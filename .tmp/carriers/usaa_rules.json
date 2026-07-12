@@ -190,7 +190,7 @@
       "recommendation": "Verify sealant is only applied where necessary",
       "guideline_reference": "Page 16",
       "suppress_if_room_contains": {
-        "component_keywords": ["drywall", "baseboard"],
+        "component_keywords": ["drywall", "baseboard", "stucco"],
         "action_keywords": ["r&r", "replace", "replacement", "remove"]
       }
     },
