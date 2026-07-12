@@ -161,8 +161,38 @@ def extract_line_items_from_text(text, estimate_id):
     return line_items
 
 
+# Xactimate CAT codes - the first token of every line item description
+# (e.g. "WTR" in "WTR BARRZ + Peel & seal zipper") - map to a category
+# unambiguously. This is checked before any keyword scan of the full
+# description, since scanning the whole text for loose substrings like
+# "SEAL" or "AC" produces false matches (e.g. "seal" inside a water-barrier
+# item's description, or "AC" inside the word "replace").
+CODE_PREFIX_CATEGORIES = {
+    'DMO': 'DEMOLITION',
+    'WTR': 'MITIGATION',
+    'DRY': 'DRYWALL',
+    'PNT': 'PAINTING',
+    'TIL': 'FLOORING',
+    'FCT': 'FLOORING',
+    'CPT': 'FLOORING',
+    'RFG': 'ROOFING',
+    'SDG': 'SIDING',
+    'PLM': 'PLUMBING',
+    'ELE': 'ELECTRICAL',
+    'HVC': 'HVAC',
+    'CLN': 'CLEANING',
+    'LAB': 'GENERAL',
+}
+
+
 def categorize_line_item(description):
-    """Categorize line item based on description keywords."""
+    """Categorize line item, preferring the Xactimate CAT code prefix."""
+    code_match = re.match(r'^([A-Z]{2,6})\b', description.strip())
+    code = code_match.group(1) if code_match else None
+
+    if code and code in CODE_PREFIX_CATEGORIES:
+        return CODE_PREFIX_CATEGORIES[code]
+
     desc_upper = description.upper()
 
     categories = {
