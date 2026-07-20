@@ -1,16 +1,32 @@
 {
   "carrier": "USAA",
-  "version": "March 2022",
-  "source_document": "USAA Property Direct Repair Program Guidelines and Consistencies",
+  "version": "Updated February 25th, 2026",
+  "source_document": "USAA_PDRP_Estimate_Guidelines_2026-02-25.pdf",
 
   "disallowed_items": [
     {
       "rule_id": "USAA_DA_001",
-      "item_pattern": ["inspection fee", "site visit fee", "site inspection"],
+      "item_pattern": ["fuel surcharge"],
       "category": null,
-      "description": "Inspection fees not permissible unless pre-approved",
-      "reason": "Unless inspection is requested by USAA and inspection fee is preapproved, inspection fees are not permissible under the USAA Program",
-      "guideline_reference": "Page 7"
+      "description": "Fuel surcharges not permissible",
+      "reason": "Fuel Surcharges are listed under Items Not Permissible for contents/pack-out billing",
+      "guideline_reference": "Page 35"
+    },
+    {
+      "rule_id": "USAA_DA_002",
+      "item_pattern": ["forklift"],
+      "category": null,
+      "description": "Forklift operator charges not permissible",
+      "reason": "Forklift Operator is listed under Items Not Permissible for contents/pack-out billing",
+      "guideline_reference": "Page 35"
+    },
+    {
+      "rule_id": "USAA_DA_003",
+      "item_pattern": ["evaluate pack", "evaluate pack & inventory", "cps bx"],
+      "category": null,
+      "description": "\"Evaluate pack & inventory\" line items not permissible",
+      "reason": "\"Evaluate pack & inventory\" line items are not permissible - this includes all iterations of the CPS BX*** Xactimate code",
+      "guideline_reference": "Page 35"
     }
   ],
 
@@ -23,8 +39,8 @@
       "max_quantity": 15,
       "unit": "percent",
       "description": "Waste for carpet and vinyl: 15% maximum",
-      "reason": "Waste is built into the Xactimate unit cost for all flooring line items except carpet and sheet vinyl. All carpet and vinyl replacement estimates should be calculated using the cut method or applying 15% waste",
-      "guideline_reference": "Page 12-13"
+      "reason": "Waste is built into the Xactimate unit cost for all flooring line items except carpet and sheet vinyl. All carpet and vinyl replacement estimates should be calculated applying 15% waste. Use of Xactimate Carpet and Vinyl Flooring Wizard is not permissible",
+      "guideline_reference": "Page 23-24"
     },
     {
       "rule_id": "USAA_QL_002",
@@ -33,125 +49,100 @@
       "max_height": 20,
       "unit": "feet",
       "description": "Scaffolding only if platform exceeds 20 feet",
-      "reason": "Generally, a contractor will have and use standard ladders, jacks, and plank scaffolding as part of their normal equipment toolset. The labor yield assumption addresses the average time necessary for normal one- or two-story applications, including the set up and use of this equipment as needed, where the ladder scaffold platform does not exceed 20'",
-      "guideline_reference": "Page 16"
+      "reason": "Paul Davis will have and use standard ladders, jacks, and plank scaffolding as part of their normal equipment toolset, and as such, the labor yield assumption addresses the average time necessary for normal one or two-story applications, including the set up and use of this equipment as needed, where the ladder scaffold platform does not exceed 20'",
+      "guideline_reference": "Page 28"
     }
   ],
 
   "overhead_profit_restrictions": [
     {
       "rule_id": "USAA_OP_001",
-      "description": "O&P requires multiple skilled trades",
-      "reason": "Non-cumulative 10% overhead & 10% profit is allowed provided: There are multiple approved/recognized skilled trades represented in the estimate and there is a reasonable expectation that the services of a General Contractor are necessary to coordinate the repairs",
-      "non_skilled_trades": [
-        "minimum charges",
-        "general labor",
-        "window screens",
-        "contents cleaning",
-        "pack-out",
-        "emergency services",
-        "demolition",
-        "debris removal",
-        "a/c compressor combing",
-        "detach and reset"
-      ],
-      "guideline_reference": "Page 11-12"
-    },
-    {
-      "rule_id": "USAA_OP_002",
-      "description": "Non-cumulative O&P percentages",
-      "standard_oh": 10,
-      "standard_profit": 10,
-      "special_locations": {
-        "DC": {"oh": 15, "profit": 10},
-        "VA_counties": ["Fairfax", "Loudon", "Prince William", "Stafford", "Fauquier", "Spotsylvania"],
-        "MD_counties": ["Montgomery", "Howard", "Anne Arundel", "Prince George", "Baltimore", "Calvert", "Charles", "St. Mary's", "Harford", "Queen Anne's", "Talbot", "Wicomico", "Worcester", "Dorchester", "Somerset", "Washington", "Frederick", "Carroll", "Kent", "Cecil", "Caroline"]
-      },
-      "reason": "Please note that there are certain states/counties where 15% overhead and 10% profit are afforded at the loss location",
-      "guideline_reference": "Page 12"
+      "description": "O&P allowable on all trades except mitigation, with adjuster pre-approval",
+      "reason": "Overhead and Profit is allowable on all trades (except mitigation) with adjuster pre-approval and solid documentation/support in the file notes",
+      "guideline_reference": "Page 17"
     }
   ],
 
   "f9_note_requirements": [
     {
       "rule_id": "USAA_F9_001",
-      "item_pattern": ["partial", "repair only", "replacement only", "section"],
-      "categories": ["ROOFING", "SIDING", "FLOORING"],
-      "description": "F9 note required for partial repairs/replacements",
-      "reason": "All PDRP contractors will place an F9 NOTE on the applicable line item(s) indicating that line item & measurement is for a partial repair/replacement ONLY",
-      "required_info": "Indicate which slope/area/room/elevation where damage is located",
-      "recommended_note": "This line item is for partial repair/replacement ONLY. Damage located at [specify location/area].",
-      "guideline_reference": "Page 8"
+      "item_pattern": ["labor hours", "lab hours", "additional labor", "extra labor"],
+      "category": null,
+      "description": "Line-item note required for additional labor hours",
+      "reason": "Labor cost is included in most line-item cost in Xactimate. Labor hours to supplement line-item cost are not permissible. If there is an exception that renders the unit cost in Xactimate ineffective, the additional labor cost must be supported with photos and documentation in XactAnalysis Notes; including a line item Xactimate note",
+      "required_info": "Explain why Xactimate unit cost is ineffective and why additional labor is needed",
+      "recommended_note": "Additional labor required due to [specific condition]. Xactimate line item does not account for [explain situation]. See photos for documentation.",
+      "guideline_reference": "Page 16"
     },
     {
       "rule_id": "USAA_F9_002",
-      "item_pattern": ["minimum", "min", "lab min", "plb min", "elc min", "fnc min", "wds min"],
-      "category": null,
-      "description": "F9 note required for all manual minimum charges",
-      "reason": "All manually entered Minimum Charges must have an 'F9' note attached to clarify what the line item includes",
-      "required_info": "Clarify what work the minimum charge includes",
-      "recommended_note": "Minimum charge for [trade] includes: [list specific work performed].",
-      "guideline_reference": "Page 15"
+      "item_pattern": ["masking", "mask", "pnt mask"],
+      "category": "PAINTING",
+      "description": "Line-item note required for additional masking beyond standard",
+      "reason": "If additional masking line items are used for drywall work, demo, etc., provide line item note for explanation",
+      "required_info": "Explain why additional masking is required beyond standard painting work",
+      "recommended_note": "Additional masking required due to [reason - e.g., extensive drywall work, demolition, overspray protection]. See photos.",
+      "guideline_reference": "Page 28"
     },
     {
       "rule_id": "USAA_F9_003",
-      "item_pattern": ["labor hours", "lab hours", "additional labor", "extra labor"],
-      "category": null,
-      "description": "F9 note required for additional labor hours",
-      "reason": "Labor cost is included in most line-item cost in Xactimate. Labor hours to supplement line-item cost are not permissible. If there is an exception that renders the unit cost in Xactimate ineffective, the additional labor cost must be supported with photos and documentation in XactAnalysis Notes; including F9 Xactimate note",
-      "required_info": "Explain why Xactimate unit cost is ineffective and why additional labor is needed",
-      "recommended_note": "Additional labor required due to [specific condition]. Xactimate line item does not account for [explain situation]. See photos for documentation.",
-      "guideline_reference": "Page 15"
+      "item_pattern": ["toilet - detach", "vanity - detach", "faucet - detach", "shower - detach", "tub - detach", "stop & r&r", "supply & r&r", "fixture supply", "p-trap", "dishwasher - detach", "disposal - detach", "drain - detach"],
+      "applies_to": "undamaged plumbing components",
+      "description": "Line-item note required when detaching/resetting undamaged plumbing",
+      "reason": "Plumbing components (supply lines, p-traps, fixtures, etc.) are typically reusable and may not require resetting when undamaged by the covered peril. Allowance to replace or detach/reset undamaged components should be documented (photos and line-item note) when not evident by the repair methodology",
+      "required_info": "Explain why undamaged component needs to be detached/reset or replaced",
+      "recommended_note": "Undamaged plumbing component requires detach/reset due to [reason - e.g., access for repairs, age/condition makes reuse not feasible]. See photos.",
+      "guideline_reference": "Page 28"
     },
     {
       "rule_id": "USAA_F9_004",
-      "item_pattern": ["masking", "mask", "pnt mask"],
-      "category": "PAINTING",
-      "description": "F9 note required for additional masking beyond standard",
-      "reason": "If additional masking line items are used for drywall work, demo, etc., provide F9 note for explanation",
-      "required_info": "Explain why additional masking is required beyond standard painting work",
-      "recommended_note": "Additional masking required due to [reason - e.g., extensive drywall work, demolition, overspray protection]. See photos.",
-      "guideline_reference": "Page 18"
+      "item_pattern": ["temporary", "temp repair", "emergency repair", "tarp"],
+      "category": "ROOFING",
+      "description": "Line-item note required for temporary repair methods",
+      "reason": "Photos and line-item notes should clearly support methods employed for temporary repairs",
+      "required_info": "Document the temporary repair method and materials used",
+      "recommended_note": "Temporary repair using [method/materials] to prevent further damage until permanent repairs can be completed. See photos.",
+      "guideline_reference": "Page 30"
     },
     {
       "rule_id": "USAA_F9_005",
-      "item_pattern": ["toilet - detach", "vanity - detach", "faucet - detach", "shower - detach", "tub - detach", "stop & r&r", "supply & r&r", "fixture supply", "p-trap", "dishwasher - detach", "disposal - detach", "drain - detach"],
-      "applies_to": "undamaged plumbing components",
-      "description": "F9 note required when detaching/resetting undamaged plumbing",
-      "reason": "Plumbing components (supply lines, p-traps, fixtures, etc.) are typically reusable and may not require resetting when undamaged by the covered peril. Allowance to replace or detach/reset undamaged components should be documented (photos and F9 note) when not evident by the repair methodology",
-      "required_info": "Explain why undamaged component needs to be detached/reset or replaced",
-      "recommended_note": "Undamaged plumbing component requires detach/reset due to [reason - e.g., access for repairs, age/condition makes reuse not feasible]. See photos.",
-      "guideline_reference": "Page 18"
+      "item_pattern": ["set up", "setup", "mitigation setup", "equipment setup"],
+      "category": "MITIGATION",
+      "description": "Line-item note required for mitigation equipment setup costs",
+      "reason": "Cost for the initial set up is permissible; based on amount of equipment needed and should be documented with line-item notes",
+      "required_info": "Document the type and amount of equipment set up",
+      "recommended_note": "Initial setup for [number] dehumidifiers, [number] air movers, and [other equipment] to dry affected areas. See equipment log.",
+      "guideline_reference": "Page 20"
     },
     {
       "rule_id": "USAA_F9_006",
-      "item_pattern": ["temporary", "temp repair", "emergency repair", "tarp"],
-      "category": "ROOFING",
-      "description": "F9 note required for temporary repair methods",
-      "reason": "Photos and F9 notes should clearly support methods employed for temporary repairs",
-      "required_info": "Document the temporary repair method and materials used",
-      "recommended_note": "Temporary repair using [method/materials] to prevent further damage until permanent repairs can be completed. See photos.",
-      "guideline_reference": "Page 22"
+      "item_pattern": ["carpet pad", "pad replacement", "padding"],
+      "category": "FLOORING",
+      "description": "Documentation required when replacing only carpet pad",
+      "reason": "If Paul Davis is replacing carpet pad when only the carpet is damaged (no damage to existing carpet pad), they should support the recommendation in XactAnalysis Notes: how old is the carpet and pad, is this a high traffic area, and if the carpet only is replaced, is there a reasonable uniform appearance",
+      "required_info": "Age of carpet/pad, whether it's a high-traffic area, and whether replacing carpet only still achieves a reasonable uniform appearance",
+      "recommended_note": "Carpet pad replacement recommended. Carpet is [age] years old in high-traffic area. Replacing only carpet without pad would result in non-uniform appearance due to [reason].",
+      "guideline_reference": "Page 24"
     },
     {
       "rule_id": "USAA_F9_007",
-      "item_pattern": ["set up", "setup", "mitigation setup", "equipment setup"],
-      "category": "MITIGATION",
-      "description": "F9 note required for mitigation equipment setup costs",
-      "reason": "Cost for initial set up is permissible; based on amount of equipment needed and should be documented with F9 notes",
-      "required_info": "Document the type and amount of equipment set up",
-      "recommended_note": "Initial setup for [number] dehumidifiers, [number] air movers, and [other equipment] to dry affected areas. See equipment log.",
-      "guideline_reference": "Page 25"
+      "item_pattern": ["rfg high", "rgh high"],
+      "category": "ROOFING",
+      "description": "F9 note required when RFG HIGH is not used as a separate line item",
+      "reason": "If a separate line item is not utilized for RFG HIGH, please add an F9 note to indicate the reason why",
+      "required_info": "Explain why the 2-story/high roof charge was not itemized separately",
+      "recommended_note": "RFG HIGH not itemized separately because [reason]. See photos.",
+      "guideline_reference": "Page 33"
     },
     {
       "rule_id": "USAA_F9_008",
-      "item_pattern": ["carpet pad", "pad replacement", "padding"],
-      "category": "FLOORING",
-      "description": "F9 note required when replacing only carpet pad",
-      "reason": "If contractor is replacing carpet pad when only the carpet is damaged (no damage to existing carpet pad), they should support the recommendation in XactAnalysis Notes",
-      "required_info": "Age of carpet/pad, traffic level, and uniform appearance assessment",
-      "recommended_note": "Carpet pad replacement recommended. Carpet is [age] years old in high-traffic area. Replacing only carpet without pad would result in non-uniform appearance due to [reason].",
-      "guideline_reference": "Page 12"
+      "item_pattern": ["cargo van", "moving van", "cps-tr", "vehicle rental", "truck rental"],
+      "category": null,
+      "description": "F9 note and rental invoice required for cargo/moving van rental",
+      "reason": "Cargo Vans and/or Moving Vans are not permissible unless a F9 note indicates a rental was needed and a rental invoice is uploaded. The vehicle or truck rental (CPS-TR series) must be rented for a specific claim",
+      "required_info": "Explain why a cargo/moving van rental was needed for this specific claim",
+      "recommended_note": "Cargo/moving van rental required for [reason]. Rental invoice uploaded to XactAnalysis.",
+      "guideline_reference": "Page 34"
     }
   ],
 
@@ -164,7 +155,7 @@
       "severity": "info",
       "reason": "Semi-Gloss and High Gloss painted baseboards, door, window, and door trim, etc. should not be painted if not damaged",
       "recommendation": "Review if undamaged trim is included in paint scope",
-      "guideline_reference": "Page 16",
+      "guideline_reference": "Page 25",
       "suppress_if_room_contains": {
         "component_keywords": ["door", "frame", "jamb", "window"],
         "action_keywords": ["r&r", "replace", "replacement"]
@@ -178,19 +169,19 @@
       "severity": "info",
       "reason": "If a closing door (carpet only), or threshold separates the room or the run is not continuous into the next room, replacement of other undamaged areas should not be included",
       "recommendation": "Verify flooring scope stops at natural break points (thresholds, closing doors)",
-      "guideline_reference": "Page 12-13"
+      "guideline_reference": "Page 23"
     },
     {
       "rule_id": "USAA_OBS_003",
       "item_pattern": ["seal", "sealer", "primer", "pva"],
       "category": "PAINTING",
-      "description": "Sealant typically only for new drywall, stains, or areas to be textured",
+      "description": "Sealant typically only for new drywall, new non-paint grade trim, stains, or areas to be textured",
       "severity": "info",
-      "reason": "Sealant is typically applied for new drywall, stained areas, or areas to be textured",
-      "recommendation": "Verify sealant is only applied where necessary",
-      "guideline_reference": "Page 16",
+      "reason": "Sealant is typically applied for new drywall, new non-paint grade trim, stained areas, or areas to be textured. Use two coats of paint when painting trim and the material is pre-primed; use one coat of primer/sealant and one coat of paint if the material doesn't come pre-primed",
+      "recommendation": "Verify sealant is only applied where necessary (new drywall/trim, stains, or texture areas)",
+      "guideline_reference": "Page 25",
       "suppress_if_room_contains": {
-        "component_keywords": ["drywall", "baseboard", "stucco"],
+        "component_keywords": ["drywall", "baseboard", "stucco", "trim"],
         "action_keywords": ["r&r", "replace", "replacement", "remove"]
       }
     },
@@ -200,16 +191,16 @@
       "category": "FLOORING",
       "description": "Waste is built into most flooring items except carpet/vinyl",
       "severity": "info",
-      "reason": "Waste is built into the Xactimate unit cost for all flooring line item except carpet and sheet vinyl",
+      "reason": "Waste is built into the Xactimate unit cost for all flooring line items except carpet and sheet vinyl",
       "recommendation": "Verify waste is not added to flooring items other than carpet and vinyl",
-      "guideline_reference": "Page 12-13"
+      "guideline_reference": "Page 23"
     }
   ],
 
   "notes": [
-    "All estimates should 'speak for themselves' with photos, F9 notes, claims documentation, and/or XactAnalysis Notes",
-    "Line items within the same category should not be added to a minimum charge",
-    "Each claim should be evaluated on its own merit for matching and appearance considerations",
-    "XactAnalysis Notes should document all decisions and member communications"
+    "Estimates should be supported by photos, XactAnalysis Notes, and line-item (F9) notes rather than relying on Xactimate default descriptions alone",
+    "Paul Davis must submit estimates with 94% or higher estimating accuracy as determined by the USAA Reinspection Team",
+    "Each situation (matching, repair vs. replace) should be considered based on its own merits and unique circumstances, including state specific standards",
+    "USAA references, adjuster contact info, and program details should never appear on the estimate itself - use XactAnalysis Notes instead"
   ]
 }

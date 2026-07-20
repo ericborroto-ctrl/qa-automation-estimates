@@ -5,7 +5,7 @@ import sys
 import pdfplumber
 
 def main():
-    pdf_path = sys.argv[1] if len(sys.argv) > 1 else "USAA_Estimating_Guidelines_-_4-26-22_(2).pdf"
+    pdf_path = sys.argv[1] if len(sys.argv) > 1 else "USAA_PDRP_Estimate_Guidelines_2026-02-25.pdf"
 
     print(f"Extracting text from: {pdf_path}\n")
 
