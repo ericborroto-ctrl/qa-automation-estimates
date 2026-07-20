@@ -86,15 +86,17 @@ def extract_line_items_from_text(text, estimate_id):
     # Line 1: 169. TIL SWR>+ & R&R Tile shower - 101 to 120 SF - High grade
     # Line 2: 1 1.00 EA 387.11+ 3,481.63 = 85.22 790.78 4,744.74
 
-    # Room boundaries are marked by a "Totals: <Room Name> <o&p> <total>" line
-    # once every item in that room has been listed (the final level-wide
+    # Room boundaries are marked by a "Totals: <Room Name> <tax> [o&p] <total>"
+    # line once every item in that room has been listed (the final level-wide
     # rollup uses the singular "Total:"). The room-name text that appears
     # where a room *starts* is overlaid on the room's sketch diagram in the
     # source PDF and OCRs unreliably, so instead of parsing that we
     # retroactively tag each pending item once its room's totals line is
     # found - that text isn't overlaid on the diagram and OCRs cleanly.
+    # Some estimates show tax+O&P+total (3 numbers), others just tax+total
+    # (2 numbers, when O&P isn't broken out as its own column).
     total_pattern = re.compile(
-        r'^Totals?:\s*(.+?)\s+[\d,]+\.\d{2}\s+[\d,]+\.\d{2}\s+[\d,]+\.\d{2}\s*$'
+        r'^Totals?:\s*(.+?)\s+[\d,]+\.\d{2}\s+[\d,]+\.\d{2}(?:\s+[\d,]+\.\d{2})?\s*$'
     )
     pending_items = []
 
@@ -123,9 +125,14 @@ def extract_line_items_from_text(text, estimate_id):
             # Look at next line for quantity/price data
             next_line = lines[i + 1].strip()
 
-            # Pattern for: 1 1.00 EA 387.11+ 3,481.63 = 85.22 790.78 4,744.74
-            # or: 1642.76 1642.76SF 1.50+ 0.00 = 69.41 506.70 3,040.25
-            qty_pattern = r'[\d,]+\.?\d*\s+([\d,]+\.?\d*)\s*([A-Z]{1,4})\s+([\d,]+\.?\d*)\+.+?[\d,]+\.?\d*\s+([\d,]+\.?\d*)$'
+            # Quantity/unit is sometimes preceded by a raw multiplier and a
+            # space (OCR'd text: "1 1.00 EA 387.11+ ..."), and sometimes by
+            # a bare calc code with no digit at all, with qty+unit fused and
+            # no space (native-text PDF extraction: "PC 26.37LF 0.00+ ...").
+            # Rather than anchor on what precedes the quantity, anchor on
+            # QTY+UNIT+PRICE wherever it appears on the line, then lazily
+            # capture the final dollar amount as the total.
+            qty_pattern = r'([\d,]+\.?\d*)\s*([A-Z]{1,4})\s+([\d,]+\.?\d*)\+.+?([\d,]+\.\d{2})\s*$'
             qty_match = re.search(qty_pattern, next_line)
 
             if qty_match:
