@@ -27,6 +27,22 @@
       "description": "\"Evaluate pack & inventory\" line items not permissible",
       "reason": "\"Evaluate pack & inventory\" line items are not permissible - this includes all iterations of the CPS BX*** Xactimate code",
       "guideline_reference": "Page 35"
+    },
+    {
+      "rule_id": "USAA_DA_004",
+      "item_pattern": ["fcw accl", "acclimation"],
+      "category": "FLOORING",
+      "description": "FCW ACCL not permissible when replacing wood flooring",
+      "reason": "Do not include line item FCW ACCL when replacing wood flooring. The replacement line item allows for drop off, unboxing and acclimation time",
+      "guideline_reference": "Page 24"
+    },
+    {
+      "rule_id": "USAA_DA_005",
+      "item_pattern": ["cubic feet", "cf storage", "storage - cubic"],
+      "category": null,
+      "description": "Storage billed in cubic feet not permissible",
+      "reason": "Storage is calculated on a square foot basis. Charging for storage in cubic feet is not permissible",
+      "guideline_reference": "Page 36"
     }
   ],
 
@@ -133,6 +149,36 @@
       "required_info": "Explain why a cargo/moving van rental was needed for this specific claim",
       "recommended_note": "Cargo/moving van rental required for [reason]. Rental invoice uploaded to XactAnalysis.",
       "guideline_reference": "Page 34"
+    },
+    {
+      "rule_id": "USAA_F9_009",
+      "item_pattern": ["heavy clean", "high-density", "high density"],
+      "category": null,
+      "description": "Adjuster approval required for heavy cleaning or high-density line items",
+      "reason": "Heavy cleaning or high-density line items require adjuster approval, to assess restoration cost-effectiveness",
+      "required_info": "Confirm adjuster approval was obtained for this heavy cleaning/high-density charge",
+      "recommended_note": "Heavy cleaning/high-density charge approved by adjuster [name] on [date] for [reason]. See photos.",
+      "guideline_reference": "Page 35"
+    },
+    {
+      "rule_id": "USAA_F9_010",
+      "item_pattern": ["hazardous clean"],
+      "category": null,
+      "description": "Adjuster approval required for hazardous cleaning codes",
+      "reason": "Hazardous cleaning codes require adjuster approval",
+      "required_info": "Confirm adjuster approval was obtained for this hazardous cleaning charge",
+      "recommended_note": "Hazardous cleaning charge approved by adjuster [name] on [date] for [reason]. See photos.",
+      "guideline_reference": "Page 35"
+    },
+    {
+      "rule_id": "USAA_F9_011",
+      "item_pattern": ["ppe", "personal protective equipment"],
+      "category": null,
+      "description": "IICRC documentation required to support PPE charges",
+      "reason": "Personal Protective Equipment (PPE) is no longer required on every job, however there are certain conditions that would require PPE for some estimating and repair personnel on premises. If PPE is required, IICRC documentation is necessary for approval",
+      "required_info": "IICRC documentation supporting the condition requiring PPE",
+      "recommended_note": "PPE required due to [condition]. IICRC documentation supporting this need is attached.",
+      "guideline_reference": "Page 35"
     }
   ],
 
@@ -191,11 +237,11 @@
       "category": "CLEANING",
       "description": "CLN FINALR should only be used where there was unusual construction debris/dust",
       "severity": "info",
-      "reason": "If circumstances require additional cleaning allowances, use Xactimate line item CLN FINALR. This should only be used when there is an unusual amount of construction debris or dust related to the repairs in the affected area. This should be supported by photos",
-      "recommendation": "Verify this room has drywall/demo/texture work generating unusual dust or debris before including CLN FINALR",
-      "guideline_reference": "Page 28",
+      "reason": "CLN FINALR is intended to remove excess dust and debris within a residential home upon completion of construction activities prior to move in. Ex. Construction dust created by sanding and refinishing hardwood floors, tear out of tile flooring, drywall repairs or re-blowing texture. Replacement of carpet or painting typically would not create dust",
+      "recommendation": "Verify this room has drywall/demo/texture/sanding/refinishing work generating unusual dust or debris before including CLN FINALR",
+      "guideline_reference": "Page 18",
       "flag_if_room_lacks": {
-        "component_keywords": ["drywall", "demo", "texture", "tear out"]
+        "component_keywords": ["drywall", "demo", "texture", "tear out", "sand", "refinish"]
       }
     },
     {
