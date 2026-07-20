@@ -177,6 +177,7 @@ def extract_line_items_from_text(text, estimate_id):
 CODE_PREFIX_CATEGORIES = {
     'DMO': 'DEMOLITION',
     'WTR': 'MITIGATION',
+    'HMR': 'MITIGATION',
     'DRY': 'DRYWALL',
     'PNT': 'PAINTING',
     'TIL': 'FLOORING',

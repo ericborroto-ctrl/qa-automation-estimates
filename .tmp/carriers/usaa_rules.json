@@ -256,6 +256,16 @@
       "duplicate_if_room_contains": {
         "other_item_description_contains": ["taped"]
       }
+    },
+    {
+      "rule_id": "USAA_OBS_007",
+      "item_pattern": ["tear out"],
+      "category": "MITIGATION",
+      "description": "WTR/HMR tear-out items may belong on a reconstruction R&R line item instead",
+      "severity": "info",
+      "reason": "WTR (Water Mitigation) and HMR (Hazardous Material Remediation) are mitigation-trade Xactimate categories. USAA sends General Contractor/Reconstruction and Water Mitigation as separate assignments when both are needed (Page 4), which suggests mitigation-trade tear-out items may not belong on a reconstruction estimate - the removal is typically expected to be billed as part of the reconstruction R&R line item for that material (e.g. \"DRY 1/2 & R&R\" instead of a separate WTR/HMR tear-out plus a DRY replace item). This is inferred from the separate-assignment structure, not a direct guideline quote - lower confidence than other rules here. Especially worth checking if the line item note indicates it was moved over from a mitigation/mold assignment",
+      "recommendation": "Verify whether this WTR/HMR tear-out item should be consolidated into a standard reconstruction R&R line item for the same material instead of billed separately under a mitigation trade code",
+      "guideline_reference": "Page 4 (inferred from separate-assignment structure, not a direct quote)"
     }
   ],
 
