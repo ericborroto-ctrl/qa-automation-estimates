@@ -75,16 +75,6 @@
       "guideline_reference": "Page 16"
     },
     {
-      "rule_id": "USAA_F9_002",
-      "item_pattern": ["masking", "mask", "pnt mask"],
-      "category": "PAINTING",
-      "description": "Line-item note required for additional masking beyond standard",
-      "reason": "If additional masking line items are used for drywall work, demo, etc., provide line item note for explanation",
-      "required_info": "Explain why additional masking is required beyond standard painting work",
-      "recommended_note": "Additional masking required due to [reason - e.g., extensive drywall work, demolition, overspray protection]. See photos.",
-      "guideline_reference": "Page 28"
-    },
-    {
       "rule_id": "USAA_F9_003",
       "item_pattern": ["toilet - detach", "vanity - detach", "faucet - detach", "shower - detach", "tub - detach", "stop & r&r", "supply & r&r", "fixture supply", "p-trap", "dishwasher - detach", "disposal - detach", "drain - detach"],
       "applies_to": "undamaged plumbing components",
@@ -194,6 +184,32 @@
       "reason": "Waste is built into the Xactimate unit cost for all flooring line items except carpet and sheet vinyl",
       "recommendation": "Verify waste is not added to flooring items other than carpet and vinyl",
       "guideline_reference": "Page 23"
+    },
+    {
+      "rule_id": "USAA_OBS_005",
+      "item_pattern": ["cln finalr", "final cleaning"],
+      "category": "CLEANING",
+      "description": "CLN FINALR should only be used where there was unusual construction debris/dust",
+      "severity": "info",
+      "reason": "If circumstances require additional cleaning allowances, use Xactimate line item CLN FINALR. This should only be used when there is an unusual amount of construction debris or dust related to the repairs in the affected area. This should be supported by photos",
+      "recommendation": "Verify this room has drywall/demo/texture work generating unusual dust or debris before including CLN FINALR",
+      "guideline_reference": "Page 28",
+      "flag_if_room_lacks": {
+        "component_keywords": ["drywall", "demo", "texture", "tear out"]
+      }
+    },
+    {
+      "rule_id": "USAA_OBS_006",
+      "item_pattern": ["dry patchj", "tape joint for new to existing drywall"],
+      "category": "DRYWALL",
+      "description": "DRY PATCHJ may duplicate taping already included in the base drywall line item",
+      "severity": "info",
+      "reason": "Xactimate's base drywall replacement line items (e.g. \"1/2\" drywall - hung, taped, ready for texture\") already include taping in their own description. A separate DRY PATCHJ (tape joint) charge in the same room may be duplicate billing",
+      "recommendation": "Check whether the room's base drywall line item description already includes taping - if so, DRY PATCHJ is likely redundant",
+      "guideline_reference": "Xactimate line-item description (not a specific guideline page)",
+      "duplicate_if_room_contains": {
+        "other_item_description_contains": ["taped"]
+      }
     }
   ],
 

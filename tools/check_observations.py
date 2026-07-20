@@ -57,6 +57,53 @@ def has_suppression_context(line_item, room_index, suppression_rule):
     return False
 
 
+def has_required_context(line_item, room_index, requirement_rule):
+    """Check if another item in the same room justifies this item's presence.
+
+    E.g. CLN FINALR (extra construction cleanup) is only appropriate where the
+    room actually has dust-generating work (drywall, demo, texture) - if no
+    other item in the room matches, the room lacks the context that would
+    justify it. Room 'Unknown' returns True (don't flag) since absence can't
+    be confirmed without knowing the room.
+    """
+    room = line_item.get('room', 'Unknown')
+    if room == 'Unknown':
+        return True
+
+    component_keywords = requirement_rule.get('component_keywords', [])
+
+    for other in room_index.get(room, []):
+        if other is line_item:
+            continue
+        other_desc = other['description'].lower()
+        if any(c in other_desc for c in component_keywords):
+            return True
+
+    return False
+
+
+def has_duplicate_context(line_item, room_index, duplicate_rule):
+    """Check if another item in the same room's own description already
+    covers this item's scope - e.g. a separate taping charge (DRY PATCHJ)
+    when the room's base drywall item already says "hung, taped, ready for
+    texture" in its own description.
+    """
+    room = line_item.get('room', 'Unknown')
+    if room == 'Unknown':
+        return False
+
+    substrings = duplicate_rule.get('other_item_description_contains', [])
+
+    for other in room_index.get(room, []):
+        if other is line_item:
+            continue
+        other_desc = other['description'].lower()
+        if any(s in other_desc for s in substrings):
+            return True
+
+    return False
+
+
 def check_observations(line_item, observation_rules, estimate_id, room_index=None):
     """Check if a line item has observations worth noting."""
     observations = []
@@ -88,6 +135,16 @@ def check_observations(line_item, observation_rules, estimate_id, room_index=Non
         suppression_rule = rule.get('suppress_if_room_contains')
         if match_found and suppression_rule and room_index is not None:
             if has_suppression_context(line_item, room_index, suppression_rule):
+                match_found = False
+
+        requirement_rule = rule.get('flag_if_room_lacks')
+        if match_found and requirement_rule and room_index is not None:
+            if has_required_context(line_item, room_index, requirement_rule):
+                match_found = False
+
+        duplicate_rule = rule.get('duplicate_if_room_contains')
+        if match_found and duplicate_rule and room_index is not None:
+            if not has_duplicate_context(line_item, room_index, duplicate_rule):
                 match_found = False
 
         if match_found:
