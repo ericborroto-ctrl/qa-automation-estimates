@@ -46,8 +46,84 @@ st.markdown("""
         border: 1px solid #bee5eb;
         margin: 1rem 0;
     }
+    .alert-legend-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.6rem;
+        margin: 0.5rem 0;
+    }
+    .alert-badge {
+        flex-shrink: 0;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1rem;
+    }
+    .alert-legend-text b { display: block; }
+    .alert-legend-text span { color: #666; font-size: 0.85rem; }
+    .alert-summary-card {
+        border-radius: 0.5rem;
+        padding: 1rem;
+        text-align: center;
+        border: 1px solid;
+    }
+    .alert-summary-count { font-size: 2rem; font-weight: bold; }
+    .alert-summary-label { font-weight: 600; margin-top: 0.25rem; }
+    .alert-summary-sub { font-size: 0.8rem; color: #666; }
     </style>
 """, unsafe_allow_html=True)
+
+# Alert type definitions - mirrors Xactimate's own QA scrub taxonomy so
+# results read consistently with what estimators already know: Violations
+# must be resolved in the estimate, Warnings can be resolved with a note
+# explaining why the flagged item is justified, Cautions are informational.
+ALERT_TYPES = {
+    'violation': {'color': '#dc3545', 'bg': '#f8d7da', 'symbol': '!', 'label': 'Violation',
+                  'description': "Must be resolved inside the estimate."},
+    'warning': {'color': '#e67e22', 'bg': '#fdebd0', 'symbol': '!', 'label': 'Warning',
+                'description': "Can be resolved, or explained with a line-item note."},
+    'caution': {'color': '#f0ad4e', 'bg': '#fff3cd', 'symbol': 'i', 'label': 'Caution',
+                'description': "Worth noting, but no action is required."},
+}
+
+
+def alert_badge_html(kind):
+    a = ALERT_TYPES[kind]
+    return f'<div class="alert-badge" style="background-color:{a["color"]};">{a["symbol"]}</div>'
+
+
+def render_alert_legend():
+    st.markdown("#### Alerts")
+    st.caption("Alerts make it easier to find what and where problems are and how to fix them, using rules in the estimate.")
+    for kind in ('violation', 'warning', 'caution'):
+        a = ALERT_TYPES[kind]
+        st.markdown(
+            f'<div class="alert-legend-row">{alert_badge_html(kind)}'
+            f'<div class="alert-legend-text"><b>{a["label"]}</b><span>{a["description"]}</span></div></div>',
+            unsafe_allow_html=True
+        )
+
+
+def render_alert_summary(violations, warnings, cautions):
+    cols = st.columns(3)
+    counts = {'violation': violations, 'warning': warnings, 'caution': cautions}
+    for col, kind in zip(cols, ('violation', 'warning', 'caution')):
+        a = ALERT_TYPES[kind]
+        with col:
+            st.markdown(
+                f'<div class="alert-summary-card" style="background-color:{a["bg"]};border-color:{a["color"]};">'
+                f'{alert_badge_html(kind)}'
+                f'<div class="alert-summary-count" style="color:{a["color"]};">{counts[kind]}</div>'
+                f'<div class="alert-summary-label">{a["label"]}s</div>'
+                f'<div class="alert-summary-sub">{a["description"]}</div>'
+                f'</div>',
+                unsafe_allow_html=True
+            )
 
 # Initialize session state
 if 'processed' not in st.session_state:
@@ -91,6 +167,10 @@ with st.sidebar:
     3. Click 'Run QA Analysis'
     4. Download report
     """)
+
+    st.markdown("---")
+
+    render_alert_legend()
 
 # Main content
 col1, col2 = st.columns([2, 1])
@@ -214,16 +294,22 @@ if uploaded_file:
             issues_dir = Path(".tmp/issues")
 
             disallowed_file = issues_dir / f"disallowed_{estimate_id}.json"
+            quantities_file = issues_dir / f"quantities_{estimate_id}.json"
             f9_notes_file = issues_dir / f"f9_notes_{estimate_id}.json"
             observations_file = issues_dir / f"observations_{estimate_id}.json"
 
             disallowed_count = 0
+            quantities_count = 0
             f9_count = 0
             obs_count = 0
 
             if disallowed_file.exists():
                 with open(disallowed_file) as f:
                     disallowed_count = json.load(f).get('issues_found', 0)
+
+            if quantities_file.exists():
+                with open(quantities_file) as f:
+                    quantities_count = json.load(f).get('issues_found', 0)
 
             if f9_notes_file.exists():
                 with open(f9_notes_file) as f:
@@ -233,32 +319,18 @@ if uploaded_file:
                 with open(observations_file) as f:
                     obs_count = json.load(f).get('observations_found', 0)
 
+            # Violations = things the carrier won't allow (disallowed items,
+            # quantity limits exceeded) - must be resolved in the estimate.
+            # Warnings = things that need a line-item note to justify them
+            # (F9 note requirements) - resolvable with a good note.
+            # Cautions = worth reviewing, no action required (observations).
+            violations_count = disallowed_count + quantities_count
+            warnings_count = f9_count
+            cautions_count = obs_count
+
             # Display results
             st.markdown("### 📊 Validation Results")
-
-            col1, col2, col3 = st.columns(3)
-
-            with col1:
-                st.metric(
-                    "Disallowed Items",
-                    disallowed_count,
-                    delta="Issues" if disallowed_count > 0 else "Clean",
-                    delta_color="inverse"
-                )
-
-            with col2:
-                st.metric(
-                    "F9 Notes Required",
-                    f9_count,
-                    delta="Documentation needed" if f9_count > 0 else "None"
-                )
-
-            with col3:
-                st.metric(
-                    "Observations",
-                    obs_count,
-                    delta="Worth reviewing" if obs_count > 0 else "None"
-                )
+            render_alert_summary(violations_count, warnings_count, cautions_count)
 
             # Step 4: Generate PDF report
             status_text.text("📄 Step 4/4: Generating PDF report...")

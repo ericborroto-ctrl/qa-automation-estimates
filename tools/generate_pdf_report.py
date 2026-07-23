@@ -9,6 +9,7 @@ Usage:
 import sys
 import json
 import os
+import math
 from pathlib import Path
 from datetime import datetime
 from reportlab.lib.pagesizes import letter
@@ -17,6 +18,75 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
 from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT
+from reportlab.graphics.shapes import Drawing, Circle, Polygon, String
+
+
+# Alert taxonomy mirrors Xactimate's own QA scrub conventions, so results
+# read consistently with what estimators already know:
+#   Violation - things the carrier will not allow; must be resolved.
+#   Warning   - resolvable, or explained with a line-item note.
+#   Caution   - worth noting, but no action is required.
+# Violations = disallowed items + quantity limit violations.
+# Warnings = F9 note requirements. Cautions = observations.
+ALERT_STYLES = {
+    'violation': {
+        'color': '#dc3545', 'bg': '#f8d7da', 'label': 'Violation',
+        'description': 'Must be resolved inside the estimate.'
+    },
+    'warning': {
+        'color': '#e67e22', 'bg': '#fdebd0', 'label': 'Warning',
+        'description': 'Can be resolved, or explained with a line-item note.'
+    },
+    'caution': {
+        'color': '#f0ad4e', 'bg': '#fff3cd', 'label': 'Caution',
+        'description': 'Worth noting, but no action is required.'
+    },
+}
+
+
+def _regular_polygon_points(cx, cy, radius, sides, rotation_deg=0):
+    """Vertex list for a regular polygon, flattened for reportlab's Polygon."""
+    points = []
+    for i in range(sides):
+        angle = math.radians(rotation_deg + i * (360 / sides))
+        points.append(cx + radius * math.sin(angle))
+        points.append(cy + radius * math.cos(angle))
+    return points
+
+
+def make_alert_icon(kind, size=16):
+    """Small badge icon: circle (violation), octagon (warning), triangle (caution)."""
+    style = ALERT_STYLES[kind]
+    cx = cy = size / 2
+    color = colors.HexColor(style['color'])
+    d = Drawing(size, size)
+
+    if kind == 'violation':
+        d.add(Circle(cx, cy, size * 0.44, fillColor=color, strokeColor=None))
+    elif kind == 'warning':
+        pts = _regular_polygon_points(cx, cy, size * 0.48, 8, rotation_deg=22.5)
+        d.add(Polygon(pts, fillColor=color, strokeColor=None))
+    else:
+        pts = _regular_polygon_points(cx, cy, size * 0.54, 3, rotation_deg=0)
+        d.add(Polygon(pts, fillColor=color, strokeColor=None))
+
+    d.add(String(cx, cy - size * 0.22, '!', fillColor=colors.white,
+                  fontName='Helvetica-Bold', fontSize=size * 0.55, textAnchor='middle'))
+    return d
+
+
+def alert_heading(kind, text, heading_style):
+    """Section heading with its alert badge icon inline to the left."""
+    icon = make_alert_icon(kind, size=18)
+    label = Paragraph(f"<b>{text}</b>", heading_style)
+    t = Table([[icon, label]], colWidths=[0.3 * inch, 5.9 * inch])
+    t.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 0),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
+    ]))
+    return t
 
 
 def load_json(file_path):
@@ -116,6 +186,12 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
 
     normal_style = styles['Normal']
 
+    legend_text_style = ParagraphStyle(
+        'LegendText',
+        parent=normal_style,
+        fontSize=10,
+    )
+
     # Extract data
     estimate_id = estimate_json.get('estimate_id', 'Unknown')
     client = estimate_json.get('metadata', {}).get('client', 'Unknown')
@@ -128,8 +204,7 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
             carrier = data['carrier']
             break
 
-    # Calculate totals
-    total_issues = 0
+    # Calculate counts
     disallowed_count = 0
     quantities_count = 0
     f9_notes_count = 0
@@ -137,17 +212,23 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
 
     if issues_data['disallowed']:
         disallowed_count = issues_data['disallowed'].get('issues_found', 0)
-        total_issues += disallowed_count
 
     if issues_data['quantities']:
         quantities_count = issues_data['quantities'].get('issues_found', 0)
-        total_issues += quantities_count
 
     if issues_data['f9_notes']:
         f9_notes_count = issues_data['f9_notes'].get('f9_notes_required', 0)
 
     if issues_data['observations']:
         observations_count = issues_data['observations'].get('observations_found', 0)
+
+    # Violations = disallowed items + quantity limit violations (must be
+    # resolved). Warnings = F9 note requirements (resolvable with a note).
+    # Cautions = observations (informational).
+    violations_count = disallowed_count + quantities_count
+    warnings_count = f9_notes_count
+    cautions_count = observations_count
+    total_alerts = violations_count + warnings_count + cautions_count
 
     # Estimate totals
     summary = estimate_json.get('summary', {})
@@ -182,21 +263,49 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
     story.append(header_table)
     story.append(Spacer(1, 0.3*inch))
 
+    # Alerts legend - explains the three alert types up front, same as the
+    # in-app legend, so the report reads the same way regardless of where
+    # someone encounters it.
+    story.append(Paragraph("Alerts", heading_style))
+    story.append(Paragraph(
+        "Alerts make it easier to find what and where problems are and how to fix them, "
+        "using rules in the estimate. There are three distinct types of alerts.",
+        normal_style
+    ))
+    story.append(Spacer(1, 0.1*inch))
+
+    legend_rows = []
+    for kind in ('violation', 'warning', 'caution'):
+        style_info = ALERT_STYLES[kind]
+        icon = make_alert_icon(kind, size=18)
+        text = Paragraph(f"<b>{style_info['label']}</b><br/>{style_info['description']}", legend_text_style)
+        legend_rows.append([icon, text])
+
+    legend_table = Table(legend_rows, colWidths=[0.35*inch, 6*inch])
+    legend_table.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('TOPPADDING', (0, 0), (-1, -1), 4),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+    ]))
+    story.append(legend_table)
+    story.append(Spacer(1, 0.2*inch))
+
     # Summary Section
     story.append(Paragraph("Summary", heading_style))
 
     summary_data = [
-        ['Total Issues Found:', str(total_issues)],
-        ['Disallowed Items:', str(disallowed_count)],
-        ['Quantity Violations:', str(quantities_count)],
-        ['Depreciation Errors:', '0'],
-        ['F9 Notes Required:', str(f9_notes_count)],
-        ['Observations:', str(observations_count)]
+        ['Total Alerts:', str(total_alerts)],
+        ['Violations:', str(violations_count)],
+        ['Warnings:', str(warnings_count)],
+        ['Cautions:', str(cautions_count)],
     ]
 
     summary_table = Table(summary_data, colWidths=[3*inch, 3.5*inch])
     summary_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#e8f4f8')),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#e8f4f8')),
+        ('BACKGROUND', (0, 1), (-1, 1), colors.HexColor(ALERT_STYLES['violation']['bg'])),
+        ('BACKGROUND', (0, 2), (-1, 2), colors.HexColor(ALERT_STYLES['warning']['bg'])),
+        ('BACKGROUND', (0, 3), (-1, 3), colors.HexColor(ALERT_STYLES['caution']['bg'])),
         ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
         ('ALIGN', (0, 0), (0, -1), 'LEFT'),
         ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
@@ -210,7 +319,7 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
     story.append(Spacer(1, 0.3*inch))
 
     # Issues Detail
-    if total_issues == 0:
+    if total_alerts == 0:
         # No issues found
         story.append(Paragraph("Results", heading_style))
 
@@ -223,84 +332,75 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
         )
         story.append(result_text)
     else:
-        # Disallowed items section
-        if disallowed_count > 0:
-            story.append(Paragraph("1. Disallowed Items", heading_style))
+        # Violations section - disallowed items + quantity limit violations,
+        # merged since both represent things the carrier will not allow.
+        if violations_count > 0:
+            story.append(alert_heading('violation', f'Violations ({violations_count})', heading_style))
             story.append(Paragraph(
-                f"Found {disallowed_count} line item(s) that may violate carrier guidelines:",
+                "These line items violate carrier guidelines and must be resolved before the estimate is submitted.",
                 normal_style
             ))
             story.append(Spacer(1, 0.15*inch))
 
-            for idx, issue in enumerate(issues_data['disallowed']['issues'], start=1):
-                story.append(Paragraph(f"Issue #{idx}: {issue['description']}", subheading_style))
+            violation_idx = 1
+            violation_row_style = TableStyle([
+                ('BACKGROUND', (0, 0), (0, -1), colors.HexColor(ALERT_STYLES['violation']['bg'])),
+                ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+                ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+                ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+                ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 9),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ])
 
-                issue_data = [
-                    ['Line Item:', f"#{issue['line_item']}"],
-                    ['Category:', issue.get('category', 'N/A')],
-                    ['Amount:', f"${issue['total']:.2f}"],
-                    ['Confidence:', f"{issue['confidence']}%"],
-                    ['Reason:', Paragraph(issue['reason'], normal_style)],
-                    ['Recommendation:', Paragraph(issue['recommendation'], normal_style)],
-                    ['Reference:', issue['guideline_reference']]
-                ]
+            if disallowed_count > 0:
+                for issue in issues_data['disallowed']['issues']:
+                    story.append(Paragraph(f"Violation #{violation_idx}: {issue['description']}", subheading_style))
 
-                issue_table = Table(issue_data, colWidths=[1.5*inch, 5*inch])
-                issue_table.setStyle(TableStyle([
-                    ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#fff3cd')),
-                    ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-                    ('ALIGN', (0, 0), (0, -1), 'LEFT'),
-                    ('ALIGN', (1, 0), (1, -1), 'LEFT'),
-                    ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-                    ('FONTSIZE', (0, 0), (-1, -1), 9),
-                    ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-                    ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-                ]))
-                story.append(issue_table)
-                story.append(Spacer(1, 0.2*inch))
+                    issue_data = [
+                        ['Line Item:', f"#{issue['line_item']}"],
+                        ['Category:', issue.get('category', 'N/A')],
+                        ['Amount:', f"${issue['total']:.2f}"],
+                        ['Confidence:', f"{issue['confidence']}%"],
+                        ['Reason:', Paragraph(issue['reason'], normal_style)],
+                        ['Recommendation:', Paragraph(issue['recommendation'], normal_style)],
+                        ['Reference:', issue['guideline_reference']]
+                    ]
 
-        # Quantity limits section
-        if quantities_count > 0:
-            story.append(Paragraph("2. Quantity Limit Violations", heading_style))
-            story.append(Paragraph(
-                f"Found {quantities_count} line item(s) that exceed carrier quantity limits:",
-                normal_style
-            ))
-            story.append(Spacer(1, 0.15*inch))
+                    issue_table = Table(issue_data, colWidths=[1.5*inch, 5*inch])
+                    issue_table.setStyle(violation_row_style)
+                    story.append(issue_table)
+                    story.append(Spacer(1, 0.2*inch))
+                    violation_idx += 1
 
-            for idx, issue in enumerate(issues_data['quantities']['issues'], start=1):
-                story.append(Paragraph(f"Issue #{idx}: {issue['description']}", subheading_style))
+            if quantities_count > 0:
+                for issue in issues_data['quantities']['issues']:
+                    story.append(Paragraph(f"Violation #{violation_idx}: {issue['description']}", subheading_style))
 
-                issue_data = [
-                    ['Line Item:', f"#{issue['line_item']}"],
-                    ['Category:', issue.get('category', 'N/A')],
-                    ['Amount:', f"${issue['total']:.2f}"],
-                    ['Max Allowed:', f"{issue['max_allowed']} {issue.get('unit', 'units')}"],
-                    ['Excess:', str(issue['excess'])],
-                    ['Reason:', Paragraph(issue['reason'], normal_style)],
-                    ['Recommendation:', Paragraph(issue['recommendation'], normal_style)]
-                ]
+                    issue_data = [
+                        ['Line Item:', f"#{issue['line_item']}"],
+                        ['Category:', issue.get('category', 'N/A')],
+                        ['Amount:', f"${issue['total']:.2f}"],
+                        ['Max Allowed:', f"{issue['max_allowed']} {issue.get('unit', 'units')}"],
+                        ['Excess:', str(issue['excess'])],
+                        ['Reason:', Paragraph(issue['reason'], normal_style)],
+                        ['Recommendation:', Paragraph(issue['recommendation'], normal_style)],
+                        ['Reference:', issue.get('guideline_reference', 'N/A')]
+                    ]
 
-                issue_table = Table(issue_data, colWidths=[1.5*inch, 5*inch])
-                issue_table.setStyle(TableStyle([
-                    ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#fff3cd')),
-                    ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-                    ('ALIGN', (0, 0), (0, -1), 'LEFT'),
-                    ('ALIGN', (1, 0), (1, -1), 'LEFT'),
-                    ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-                    ('FONTSIZE', (0, 0), (-1, -1), 9),
-                    ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-                    ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-                ]))
-                story.append(issue_table)
-                story.append(Spacer(1, 0.2*inch))
+                    issue_table = Table(issue_data, colWidths=[1.5*inch, 5*inch])
+                    issue_table.setStyle(violation_row_style)
+                    story.append(issue_table)
+                    story.append(Spacer(1, 0.2*inch))
+                    violation_idx += 1
 
-    # F9 Notes section - ALWAYS show if there are F9 notes
-    if f9_notes_count > 0:
+    # Warnings section (F9 notes) - ALWAYS show if there are any
+    if warnings_count > 0:
         story.append(PageBreak())
-        story.append(Paragraph("3. F9 Note Requirements", heading_style))
+        story.append(alert_heading('warning', f'Warnings ({warnings_count})', heading_style))
         story.append(Paragraph(
-            f"Found {f9_notes_count} line item(s) that require F9 notes in Xactimate:",
+            f"Found {warnings_count} line item(s) that require a line-item (F9) note in Xactimate to justify their inclusion:",
             normal_style
         ))
         story.append(Spacer(1, 0.15*inch))
@@ -322,28 +422,28 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
 
         f9_table = Table(f9_table_data, colWidths=[0.5*inch, 1.9*inch, 1.6*inch, 1.9*inch, 0.9*inch])
         f9_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2c5aa0')),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor(ALERT_STYLES['warning']['color'])),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
             ('FONTSIZE', (0, 0), (-1, 0), 9),
             ('FONTSIZE', (0, 1), (-1, -1), 8),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#e8f4f8')),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor(ALERT_STYLES['warning']['bg'])),
             ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
             ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.HexColor('#e8f4f8'), colors.white])
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.HexColor(ALERT_STYLES['warning']['bg']), colors.white])
         ]))
         story.append(f9_table)
         story.append(Spacer(1, 0.3*inch))
 
-    # Observations section - ALWAYS show if there are observations
-    if observations_count > 0:
-        if f9_notes_count == 0:
+    # Cautions section (observations) - ALWAYS show if there are any
+    if cautions_count > 0:
+        if warnings_count == 0:
             story.append(PageBreak())
-        story.append(Paragraph("4. Observations Worth Noting", heading_style))
+        story.append(alert_heading('caution', f'Cautions ({cautions_count})', heading_style))
         story.append(Paragraph(
-            f"Found {observations_count} line item(s) worth reviewing (non-violations):",
+            f"Found {cautions_count} line item(s) worth reviewing - no action is required unless they don't apply:",
             normal_style
         ))
         story.append(Spacer(1, 0.15*inch))
@@ -365,23 +465,23 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
 
         obs_table = Table(obs_table_data, colWidths=[0.5*inch, 1.9*inch, 1.7*inch, 1.6*inch, 0.9*inch])
         obs_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#808080')),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor(ALERT_STYLES['caution']['color'])),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
             ('FONTSIZE', (0, 0), (-1, 0), 9),
             ('FONTSIZE', (0, 1), (-1, -1), 8),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f5f5f5')),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor(ALERT_STYLES['caution']['bg'])),
             ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
             ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.HexColor('#f5f5f5'), colors.white])
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.HexColor(ALERT_STYLES['caution']['bg']), colors.white])
         ]))
         story.append(obs_table)
         story.append(Spacer(1, 0.3*inch))
 
-    # Recommended actions - only if there are actual issues
-    if total_issues > 0:
+    # Recommended actions - only if there are violations to act on
+    if violations_count > 0:
         story.append(PageBreak())
         story.append(Paragraph("Recommended Actions", heading_style))
 
@@ -398,6 +498,17 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
                 else:
                     action_text = f"{action_num}. <b>Review with adjuster</b> line item #{issue['line_item']}: {issue['description']}<br/>   - Potential adjustment: ${issue['total']:.2f}"
 
+                story.append(Paragraph(action_text, normal_style))
+                story.append(Spacer(1, 0.1*inch))
+                action_num += 1
+
+        # Actions from quantity limit violations
+        if quantities_count > 0:
+            for issue in issues_data['quantities']['issues']:
+                action_text = (
+                    f"{action_num}. <b>Reduce quantity</b> on line item #{issue['line_item']}: "
+                    f"{issue['description']}<br/>   - {issue['recommendation']}"
+                )
                 story.append(Paragraph(action_text, normal_style))
                 story.append(Spacer(1, 0.1*inch))
                 action_num += 1
@@ -495,12 +606,14 @@ def main():
         print(f"Output saved to: {output_path}")
 
         # Print summary
-        total_issues = sum([
+        violations = sum([
             issues_data['disallowed'].get('issues_found', 0) if issues_data['disallowed'] else 0,
             issues_data['quantities'].get('issues_found', 0) if issues_data['quantities'] else 0
         ])
+        warnings = issues_data['f9_notes'].get('f9_notes_required', 0) if issues_data['f9_notes'] else 0
+        cautions = issues_data['observations'].get('observations_found', 0) if issues_data['observations'] else 0
 
-        print(f"Total issues in report: {total_issues}")
+        print(f"Violations: {violations} | Warnings: {warnings} | Cautions: {cautions}")
 
         return output_path
 
