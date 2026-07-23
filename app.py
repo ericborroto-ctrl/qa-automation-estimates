@@ -62,9 +62,9 @@ st.markdown("""
     .info-box {
         padding: 1rem;
         border-radius: 0.5rem;
-        background-color: #F7F3EC;
+        background-color: #1F1F1F;
         border: 1px solid #96742F;
-        color: #1A1A1A;
+        color: #FFFFFF;
         margin: 1rem 0;
     }
     .brand-footer {
