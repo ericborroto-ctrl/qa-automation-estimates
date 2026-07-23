@@ -1,7 +1,7 @@
 {
   "carrier": "USAA",
-  "version": "Updated February 25th, 2026",
-  "source_document": "USAA_PDRP_Estimate_Guidelines_2026-02-25.pdf",
+  "version": "Updated May 26th, 2026 (per filename provided; the PDF's own page footers still read \"Updated: February 25th, 2026\" - the document title also changed from \"USAA PDRP Estimate Guidelines\" to \"USAA Program Guidelines\")",
+  "source_document": "USAA_Program_Guidelines_2026-05-26.pdf",
 
   "disallowed_items": [
     {
@@ -43,6 +43,38 @@
       "description": "Storage billed in cubic feet not permissible",
       "reason": "Storage is calculated on a square foot basis. Charging for storage in cubic feet is not permissible",
       "guideline_reference": "Page 36"
+    },
+    {
+      "rule_id": "USAA_DA_006",
+      "item_pattern": ["vacuum", "vacuuming"],
+      "category": "MITIGATION",
+      "description": "General vacuuming not permitted after mitigation work is completed",
+      "reason": "General vacuuming is not permitted after mitigation work has been completed",
+      "guideline_reference": "Page 20"
+    },
+    {
+      "rule_id": "USAA_DA_007",
+      "item_pattern": ["fan - decon", "air mover - decon", "decontaminate fan", "decontaminate air mover", "decontamination - fan", "decontamination - air mover"],
+      "category": "MITIGATION",
+      "description": "Decontamination costs for fans or air movers are not reimbursable",
+      "reason": "Decontamination costs for fans or air movers is not reimbursable, even on Category 3 losses where other equipment decontamination is permissible",
+      "guideline_reference": "Pages 21-22"
+    },
+    {
+      "rule_id": "USAA_DA_008",
+      "item_pattern": ["hydroxyl", "fogging", "odor counteractant"],
+      "category": "MITIGATION",
+      "description": "Hydroxyl generators, fogging, and odor counteractants may not be reimbursable",
+      "reason": "Hydroxyl generators, fogging, and odor counteractants have not been sufficiently proven effective nor given approval for use on mitigation losses by the IICRC. Their use is discouraged by the IICRC and may not be reimbursable",
+      "guideline_reference": "Pages 21, 23"
+    },
+    {
+      "rule_id": "USAA_DA_009",
+      "item_pattern": ["mold remediation", "mold treatment", "mold removal"],
+      "category": "MITIGATION",
+      "description": "Mold work/remediation is not part of the USAA PDRP program",
+      "reason": "Mold work is not a part of the USAA PDRP program. A preliminary mold estimate should be uploaded as a PDF for adjuster review, but mold estimates should not be uploaded as final estimates into the USAA PDRP assignment. Remediation costs belong on a separate estimate, not the PDRP mitigation estimate",
+      "guideline_reference": "Page 21"
     }
   ],
 
@@ -67,6 +99,26 @@
       "description": "Scaffolding only if platform exceeds 20 feet",
       "reason": "Paul Davis will have and use standard ladders, jacks, and plank scaffolding as part of their normal equipment toolset, and as such, the labor yield assumption addresses the average time necessary for normal one or two-story applications, including the set up and use of this equipment as needed, where the ladder scaffold platform does not exceed 20'",
       "guideline_reference": "Page 28"
+    },
+    {
+      "rule_id": "USAA_QL_003",
+      "item_pattern": ["wtr eq"],
+      "category": "MITIGATION",
+      "max_quantity": 4,
+      "unit": "each (.25 per piece of equipment; quantity 4 = 16 pieces of equipment)",
+      "description": "WTR EQ equipment setup should not exceed a quantity of 4",
+      "reason": "WTR EQ for Equipment set up should be a separate line item at .25 per each piece of EQ, not exceed a quantity of 4 (16 pieces of equipment). If additional time is needed for set up, contact the USAA adjuster during the job to confirm approval and ensure approval is listed in XA notes",
+      "guideline_reference": "Page 20"
+    },
+    {
+      "rule_id": "USAA_QL_004",
+      "item_pattern": ["asbts"],
+      "category": null,
+      "max_quantity": 7,
+      "unit": "samples",
+      "description": "ASBTS per-sample billing limited to 7 or fewer samples",
+      "reason": "Selection ASBTS may be used to expense asbestos testing on a per sample basis but should be limited to 7 or fewer samples; otherwise, the ASBT fee method should be utilized to invoice this expense",
+      "guideline_reference": "Page 14"
     }
   ],
 
@@ -76,6 +128,12 @@
       "description": "O&P allowable on all trades except mitigation, with adjuster pre-approval",
       "reason": "Overhead and Profit is allowable on all trades (except mitigation) with adjuster pre-approval and solid documentation/support in the file notes",
       "guideline_reference": "Page 17"
+    },
+    {
+      "rule_id": "USAA_OP_002",
+      "description": "No O&P on the asbestos testing fee itself; O&P may apply to subcontracted abatement cost",
+      "reason": "O&P is not permissible on the testing fee. O&P may be applied on subcontracted abatement cost",
+      "guideline_reference": "Page 13"
     }
   ],
 
@@ -179,6 +237,36 @@
       "required_info": "IICRC documentation supporting the condition requiring PPE",
       "recommended_note": "PPE required due to [condition]. IICRC documentation supporting this need is attached.",
       "guideline_reference": "Page 35"
+    },
+    {
+      "rule_id": "USAA_F9_012",
+      "item_pattern": ["air scrubber"],
+      "category": "MITIGATION",
+      "description": "Air scrubbers on Category 2 drying projects need documentation substantiating necessity",
+      "reason": "Air scrubbers should not be utilized on Category 2 drying projects unless specific documentation is provided that substantiates the necessity for such equipment",
+      "required_info": "Confirm this is not a Category 2 loss, or that documentation substantiates why an air scrubber was necessary",
+      "recommended_note": "Air scrubber necessary due to [reason]. See documentation/photos supporting Category 2+ need.",
+      "guideline_reference": "Page 21"
+    },
+    {
+      "rule_id": "USAA_F9_013",
+      "item_pattern": ["hepaval", "hepa vacuum"],
+      "category": "MITIGATION",
+      "description": "HEPA Vacuuming - Light is Cat 3 only; HEPA Vacuuming - Detailed is mold-only",
+      "reason": "HEPA Vacuuming - Light (WTR HEPAVAL) is allowed when invoiced on a 'per sf' basis for Category 3 losses. HEPA Vacuuming - Detailed is allowed only when the presence of mold has been substantiated, and should be billed on the mold estimate",
+      "required_info": "Confirm this is a Category 3 loss (Light) or mold has been substantiated (Detailed), and that it's billed on the correct estimate",
+      "recommended_note": "HEPA Vacuuming - Light billed per SF for Category 3 loss. See moisture/category documentation.",
+      "guideline_reference": "Page 20"
+    },
+    {
+      "rule_id": "USAA_F9_014",
+      "item_pattern": ["drive time", "travel time", "mileage"],
+      "category": null,
+      "description": "Travel-related cost requires USAA adjuster pre-approval",
+      "reason": "Drive time, or other travel related cost, is not permissible unless pre-approved by the USAA adjuster and documented in XactAnalysis",
+      "required_info": "Confirm adjuster pre-approval was obtained for this travel-related cost",
+      "recommended_note": "Travel cost pre-approved by adjuster [name] on [date] for [reason]. See XactAnalysis notes.",
+      "guideline_reference": "Page 19"
     }
   ],
 
@@ -266,6 +354,26 @@
       "reason": "WTR (Water Mitigation) and HMR (Hazardous Material Remediation) are mitigation-trade Xactimate categories. USAA sends General Contractor/Reconstruction and Water Mitigation as separate assignments when both are needed (Page 4), which suggests mitigation-trade tear-out items may not belong on a reconstruction estimate - the removal is typically expected to be billed as part of the reconstruction R&R line item for that material (e.g. \"DRY 1/2 & R&R\" instead of a separate WTR/HMR tear-out plus a DRY replace item). This is inferred from the separate-assignment structure, not a direct guideline quote - lower confidence than other rules here. Especially worth checking if the line item note indicates it was moved over from a mitigation/mold assignment",
       "recommendation": "Verify whether this WTR/HMR tear-out item should be consolidated into a standard reconstruction R&R line item for the same material instead of billed separately under a mitigation trade code",
       "guideline_reference": "Page 4 (inferred from separate-assignment structure, not a direct quote)"
+    },
+    {
+      "rule_id": "USAA_OBS_008",
+      "item_pattern": ["supervisor", "supervisory"],
+      "category": null,
+      "description": "Non-productive supervisor hours are not billable",
+      "severity": "info",
+      "reason": "Non-productive supervisor hours are not permitted. Productive hours are billable only if the supervisor is assisting in the actual work task that does not have a dimension or quantity-based line item. Non-productive supervisor time is considered part of overhead and administrative cost",
+      "recommendation": "Verify this supervisor charge reflects productive hands-on work without an existing quantity-based line item, not administrative/oversight time",
+      "guideline_reference": "Page 19"
+    },
+    {
+      "rule_id": "USAA_OBS_009",
+      "item_pattern": ["rfg high", "rgh high"],
+      "category": "ROOFING",
+      "description": "Steep/2-story roofing charge is a one-time charge, not per layer",
+      "severity": "info",
+      "reason": "Steep and 2-story charge is a one-time charge, not for each layer of roofing being removed",
+      "recommendation": "Verify this steep/2-story charge isn't duplicated for multiple layers of roofing removal on the same slope",
+      "guideline_reference": "Page 33"
     }
   ],
 
