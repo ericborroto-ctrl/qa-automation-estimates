@@ -1,5 +1,5 @@
 """
-USAA Estimate QA Automation - Streamlit Web App
+Estimate QA Automation - Streamlit Web App
 
 This web application allows users to upload Xactimate estimate PDFs and receive
 automated QA validation reports based on carrier guidelines.
@@ -16,7 +16,7 @@ import shutil
 
 # Page config
 st.set_page_config(
-    page_title="USAA Estimate QA Automation",
+    page_title="Estimate QA Automation",
     page_icon="🔍",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -162,7 +162,7 @@ if 'report_path' not in st.session_state:
     st.session_state.report_path = None
 
 # Header
-st.markdown('<div class="main-header">🔍 USAA Estimate QA Automation</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">🔍 Estimate QA Automation</div>', unsafe_allow_html=True)
 st.markdown('<div class="main-subheader">Paul Davis &bull; Property Restoration Experts</div>', unsafe_allow_html=True)
 st.markdown("---")
 
@@ -172,7 +172,7 @@ with st.sidebar:
 
     carrier = st.selectbox(
         "Select Carrier",
-        ["USAA"],
+        ["USAA", "Allstate"],
         help="Choose the insurance carrier for validation"
     )
 

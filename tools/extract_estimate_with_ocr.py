@@ -192,6 +192,10 @@ CODE_PREFIX_CATEGORIES = {
     'CLN': 'CLEANING',
     'FNH': 'OTHER',
     'LAB': 'GENERAL',
+    'TMP': 'TARPING',
+    'CPS': 'CONTENTS',
+    'CDC': 'CONTENTS',
+    'CON': 'CONTENTS',
 }
 
 

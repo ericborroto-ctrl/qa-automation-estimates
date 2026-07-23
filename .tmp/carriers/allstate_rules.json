@@ -1,0 +1,453 @@
+{
+  "carrier": "Allstate",
+  "version": "Updated July 1, 2026",
+  "source_document": "Allstate_Encompass_NatGen_Program_Guidelines_2026-07-01.pdf",
+  "notes_program_scope": "This program guideline also covers Encompass and National General claims routed through the same GHRN/Allstate direct program - all handled under the 'Allstate' carrier selection in this tool.",
+
+  "disallowed_items": [
+    {
+      "rule_id": "AL_DA_001",
+      "item_pattern": ["axial 1hp", "axial hp air mover", "1hp axial"],
+      "category": "MITIGATION",
+      "description": "Axial 1HP air movers not permitted on typical water mitigation",
+      "reason": "Axial HP blowers should not be utilized on typical water mitigation projects. If appropriately utilized, it must be billed as a standard ¼ HP axial fan",
+      "guideline_reference": "Page 12"
+    },
+    {
+      "rule_id": "AL_DA_002",
+      "item_pattern": ["vacuum", "vacuuming"],
+      "category": "MITIGATION",
+      "description": "General vacuuming not permitted on water mitigation estimates",
+      "reason": "Clean-up fees are included in the labor component of tear out line items. Additional hourly clean-up and cleaning line items are, in most cases, unwarranted. General vacuuming is not permitted",
+      "guideline_reference": "Page 12"
+    },
+    {
+      "rule_id": "AL_DA_003",
+      "item_pattern": ["fogging", "deodorizing", "deodorize"],
+      "category": "MITIGATION",
+      "description": "General fogging/deodorizing not allowed on water mitigation",
+      "reason": "General fogging and/or deodorizing is not allowed on any water mitigation estimate",
+      "guideline_reference": "Page 15"
+    },
+    {
+      "rule_id": "AL_DA_004",
+      "item_pattern": ["pressure wash", "steam clean", "soda blast"],
+      "category": "MITIGATION",
+      "description": "Generalized pressure washing/steam cleaning/soda blasting not allowed on water mitigation",
+      "reason": "Generalized pressure washing, steam cleaning of building materials, and soda blasting are not allowed",
+      "guideline_reference": "Page 15"
+    },
+    {
+      "rule_id": "AL_DA_005",
+      "item_pattern": ["thermal imaging", "moisture meter", "extension cord", "dust mask", "remote monitoring system"],
+      "category": "MITIGATION",
+      "description": "Tools of the trade may not be billed",
+      "reason": "Tools of the trade include such things as thermal imaging devices, moisture meters, remote monitoring systems, work gloves, hammers, dust masks, extension cords, Tyvek suits on Cat 1 and Cat 2 losses, etc. and may not be charged",
+      "guideline_reference": "Page 16"
+    },
+    {
+      "rule_id": "AL_DA_006",
+      "item_pattern": ["disposable gloves", "heavy duty gloves", "full face respirator"],
+      "category": "MITIGATION",
+      "description": "PPE gloves/respirators are tools of the trade, may not be billed",
+      "reason": "PPE, such as gloves (disposable and heavy duty), full face respirators are considered tools of the trade and may not be billed. Replacement cartridges (PAPR) and Tyvek suits may be billed if utilized on Category 3 losses",
+      "guideline_reference": "Page 15"
+    },
+    {
+      "rule_id": "AL_DA_007",
+      "item_pattern": ["equipment decontamination", "decontaminate equipment", "decontamination of equipment"],
+      "category": "MITIGATION",
+      "description": "Equipment decontamination not warranted",
+      "reason": "CAT 3 work areas should be cleaned and disinfected prior to placing drying equipment. Therefore, the need for decontamination of equipment is not warranted",
+      "guideline_reference": "Page 14"
+    },
+    {
+      "rule_id": "AL_DA_008",
+      "item_pattern": ["labor minimum"],
+      "category": "MITIGATION",
+      "description": "Labor minimums not to be included on mitigation estimates",
+      "reason": "Do not include labor minimums on mitigation estimates",
+      "guideline_reference": "Page 15"
+    },
+    {
+      "rule_id": "AL_DA_009",
+      "item_pattern": ["content manipulation - hour", "content manipulation (hourly)", "content manipulation hourly", "content manipulation - per hour"],
+      "category": "CONTENTS",
+      "description": "Content manipulation hourly charges are not acceptable",
+      "reason": "Content Manipulation should be billed by the room size (CON ROOM / WTR BLK). Hourly charges are not acceptable",
+      "guideline_reference": "Pages 10, 12, 21"
+    },
+    {
+      "rule_id": "AL_DA_010",
+      "item_pattern": ["travel time", "travel hour", "travel - hour"],
+      "category": "CONTENTS",
+      "description": "Labor hours for travel time not permitted",
+      "reason": "Labor hours for travel time are not permitted",
+      "guideline_reference": "Page 21"
+    },
+    {
+      "rule_id": "AL_DA_011",
+      "item_pattern": ["warehouse handling - hour", "shift items", "warehouse shift"],
+      "category": "CONTENTS",
+      "description": "Labor to shift items within the warehouse during storage not permitted",
+      "reason": "Labor hours to shift items throughout the warehouse during storage are not permitted",
+      "guideline_reference": "Page 21"
+    },
+    {
+      "rule_id": "AL_DA_012",
+      "item_pattern": ["electronics clean", "electronics restoration", "electronics testing", "textile clean", "textile restoration"],
+      "category": "CONTENTS",
+      "description": "Electronics/textile cleaning must be referred to an approved vendor, not billed directly",
+      "reason": "All electronics and textile handling is to be referred to an Allstate approved vendor - PDR is not on the vendor program for these services. The mitigation/contents vendor should not contact these providers directly with an assignment",
+      "guideline_reference": "Pages 19-21"
+    },
+    {
+      "rule_id": "AL_DA_013",
+      "item_pattern": ["mold remediation", "mold treatment", "mold removal"],
+      "category": "MITIGATION",
+      "description": "Mold remediation costs not to be included in the mitigation estimate",
+      "reason": "Remediation costs are not to be included in the mitigation estimate - consult with the Inside Technician/Adjuster and customer on remediation cost prior to the start of work",
+      "guideline_reference": "Page 15"
+    },
+    {
+      "rule_id": "AL_DA_014",
+      "item_pattern": ["bid item", "lump sum", "miscellaneous item"],
+      "category": "MITIGATION",
+      "description": "No bid items, lump sums, or miscellaneous items on asbestos testing/abatement",
+      "reason": "No bid items, lump sums or miscellaneous items should be submitted on asbestos testing or abatement assignments",
+      "guideline_reference": "Pages 18-19"
+    }
+  ],
+
+  "quantity_limits": [],
+
+  "overhead_profit_restrictions": [
+    {
+      "rule_id": "AL_OP_001",
+      "description": "O&P does not apply to mitigation estimates",
+      "reason": "Overhead and Profit does not apply to mitigation estimates",
+      "guideline_reference": "Page 15"
+    },
+    {
+      "rule_id": "AL_OP_002",
+      "description": "O&P does not apply to tarping/board-up estimates",
+      "reason": "Overhead and Profit does not apply to tarping/board-up estimates",
+      "guideline_reference": "Page 16"
+    },
+    {
+      "rule_id": "AL_OP_003",
+      "description": "O&P does not apply to Contents estimates",
+      "reason": "Overhead and Profit does not apply to Contents estimates",
+      "guideline_reference": "Page 21"
+    },
+    {
+      "rule_id": "AL_OP_004",
+      "description": "O&P on Reconstruction is not guaranteed - requires documented complexity/coordination support",
+      "reason": "Overhead and Profit is not guaranteed on a reconstruction assignment. If you believe O&P is warranted, you must explain the complexity and coordination in a note in XactAnalysis, with supporting documents (schedules, timesheets, trade coordination details) uploaded. If an Adjuster wrote the estimate, do not add O&P unless you have prior approval and state who granted it",
+      "guideline_reference": "Page 29"
+    },
+    {
+      "rule_id": "AL_OP_005",
+      "description": "No O&P allowed on asbestos or lead testing",
+      "reason": "No O&P allowed on any asbestos or lead testing",
+      "guideline_reference": "Pages 18-19"
+    }
+  ],
+
+  "f9_note_requirements": [
+    {
+      "rule_id": "AL_F9_001",
+      "item_pattern": ["emergency service", "esrv"],
+      "category": null,
+      "description": "After-hours emergency service call must be documented",
+      "reason": "Documentation of the reasons for an After-Hours call should be noted in XactAnalysis and identified again using an F9 note within the estimate",
+      "required_info": "Explain why the call qualifies as after-hours and the reason for the emergency response",
+      "recommended_note": "After-hours emergency service call - onsite arrival at [time] on [date], outside standard business hours. See XactAnalysis notes for approval/context.",
+      "guideline_reference": "Pages 13, 16"
+    },
+    {
+      "rule_id": "AL_F9_002",
+      "item_pattern": ["set up", "setup", "take down", "equipment monitoring"],
+      "category": "MITIGATION",
+      "description": "Equipment Set Up/Take Down/Monitoring should be billed as one total line item with documentation",
+      "reason": "Equipment Set Up, Take Down and Monitoring charges should be billed as a total, in one line item on the estimate, based on the amount and type of equipment utilized",
+      "required_info": "Breakdown of equipment type and count used to calculate the set up/take down/monitoring total",
+      "recommended_note": "Equipment used: [count] dehumidifiers, [count] air movers, [other equipment]. Set up/take down/monitoring calculated per Allstate guideline minutes-per-unit table.",
+      "guideline_reference": "Page 14"
+    },
+    {
+      "rule_id": "AL_F9_003",
+      "item_pattern": ["hepa vac"],
+      "category": "MITIGATION",
+      "description": "HEPA Vac fees require documentation of when and why they were needed",
+      "reason": "Light HEPA Vac is allowed on a 'per sf' basis for Category 3 losses when the need is appropriately documented. XactAnalysis notes should explain when and why HEPA Vac fees are being included",
+      "required_info": "Loss category and reason HEPA vacuuming was necessary",
+      "recommended_note": "HEPA Vac used on [square footage] SF due to Category 3 loss. See XactAnalysis notes for documentation.",
+      "guideline_reference": "Page 15"
+    },
+    {
+      "rule_id": "AL_F9_004",
+      "item_pattern": ["cabinet - tear out", "door casing - tear out", "countertop - tear out", "cabinet tear out", "countertop tear out"],
+      "category": "MITIGATION",
+      "description": "Significant tear out (cabinets, casings, countertops) requires prior IT approval",
+      "reason": "To the extent cabinets, door casings, countertops, etc. may need to be removed during mitigation, consider less invasive alternatives first. Prior Inside Technician approval is needed before significant tear out is conducted",
+      "required_info": "Confirm prior IT approval was obtained and why less invasive drying methods weren't sufficient",
+      "recommended_note": "Significant tear out approved by IT [name] on [date]. Less invasive drying methods were not sufficient because [reason].",
+      "guideline_reference": "Page 15"
+    },
+    {
+      "rule_id": "AL_F9_005",
+      "item_pattern": ["drymask"],
+      "category": "DRYWALL",
+      "description": "DRYMASK items require F9 note support",
+      "reason": "Appropriate drywall masking/protection line items may be added with F9 notes to support - the masking items found in the drywall categories should be the first consideration when masking to address drywall and texture repairs",
+      "required_info": "Explain the extent of masking/protection needed for the drywall or texture work",
+      "recommended_note": "Masking required for [area/scope] to protect from drywall/texture work. See photos.",
+      "guideline_reference": "Page 24"
+    },
+    {
+      "rule_id": "AL_F9_006",
+      "item_pattern": ["3 coat", "three coat", "extra coat", "additional coat"],
+      "category": "PAINTING",
+      "description": "Coats beyond the standard sealer + 2 coats must be documented",
+      "reason": "The need for any variation from the standard sealer coat plus two coats of paint (three total coats), including extra coats, should be documented in F9 notes and supported through detailed and clearly-labeled photos",
+      "required_info": "Explain why additional coats beyond the standard were necessary",
+      "recommended_note": "Additional coat(s) needed due to [reason - e.g., color change, substrate condition]. See photos.",
+      "guideline_reference": "Page 24"
+    },
+    {
+      "rule_id": "AL_F9_007",
+      "item_pattern": ["dustless sand"],
+      "category": "FLOORING",
+      "description": "Dustless sanding with cabinet masking requires F9 note",
+      "reason": "Cabinet masking may be needed when sanding a kitchen to reduce micro-dust inside the cabinets; an F9 note is required when this masking is included",
+      "required_info": "Explain cabinet masking scope during dustless sanding",
+      "recommended_note": "Cabinet masking included during dustless sanding to reduce micro-dust intrusion into cabinet interiors.",
+      "guideline_reference": "Page 25"
+    },
+    {
+      "rule_id": "AL_F9_008",
+      "item_pattern": ["plm capc", "cap the line", "capping the line", "angle stop"],
+      "category": "PLUMBING",
+      "description": "Capping a water line or adding a new angle stop requires an F9 note",
+      "reason": "In many cases the shut-off valve will not shut off, so the vendor may cap the line or add a new angle stop after removal. A (PLM CAPC+) F9 note should be added to explain capping the line or adding a new angle stop",
+      "required_info": "Explain why the line was capped or a new angle stop was added",
+      "recommended_note": "Shut-off valve did not fully shut off; line capped / new angle stop added to prevent further damage during cabinet/fixture removal. See photos.",
+      "guideline_reference": "Page 29"
+    },
+    {
+      "rule_id": "AL_F9_009",
+      "item_pattern": ["plm snkrs", "p-trap"],
+      "category": "PLUMBING",
+      "description": "P-trap removal/reset for vanity/cabinet removal requires an F9 note",
+      "reason": "If the vanity did not have an open back, it is necessary to disassemble the p-trap to facilitate removal of the cabinet/vanity. A (PLM SNKRS+) F9 note should be added to explain",
+      "required_info": "Explain why the p-trap needed to be removed and reset",
+      "recommended_note": "P-trap removed/reset to facilitate vanity/cabinet removal - vanity back was not open for direct access. See photos.",
+      "guideline_reference": "Page 30"
+    },
+    {
+      "rule_id": "AL_F9_010",
+      "item_pattern": ["code upgrade", "building code"],
+      "category": null,
+      "description": "Building code items need documentation of local code applicability",
+      "reason": "It is the estimator's responsibility to verify local code requirements will be enforced during repair. If unsure, document that building code costs will be included once determined, coded to Building Code coverage",
+      "required_info": "Confirm the local code requirement and whether it will be enforced, or note that determination is pending",
+      "recommended_note": "Building code item included per [code/ordinance]. Coded to Building Code coverage. Confirmation of enforcement pending with local jurisdiction.",
+      "guideline_reference": "Page 27"
+    },
+    {
+      "rule_id": "AL_F9_011",
+      "item_pattern": ["storage"],
+      "category": "CONTENTS",
+      "description": "Storage billing must be an open line item with F9 note and clear date range",
+      "reason": "Storage charges may be supplemented after the preliminary 8-day upload - make storage billing an open line item with an F9 note explanation, including a clear date range in MM/DD/YY format",
+      "required_info": "Date range for the storage period, in MM/DD/YY format",
+      "recommended_note": "Storage from [MM/DD/YY] to [MM/DD/YY]. Climate-controlled warehouse space. See photos of stored contents.",
+      "guideline_reference": "Pages 22-23"
+    },
+    {
+      "rule_id": "AL_F9_012",
+      "item_pattern": ["cps lab"],
+      "category": "CONTENTS",
+      "description": "CPS LAB (unboxed item tag/wrap labor) requires an F9 note explaining the time needed",
+      "reason": "Separate line items for labor to tag/wrap unboxed items (disassemble beds/furniture, apply stretch wrap, moving blankets, tagging large items) should use CPS LAB with an F9 note to explain the time needed",
+      "required_info": "Explain what unboxed items required tagging/wrapping and why the labor time was needed",
+      "recommended_note": "CPS LAB time for tagging/wrapping unboxed items: [list items and quantities]. See photos.",
+      "guideline_reference": "Page 19"
+    },
+    {
+      "rule_id": "AL_F9_013",
+      "item_pattern": ["mold inspection"],
+      "category": "MITIGATION",
+      "description": "Mold inspection fees require prior approval and a 3rd party invoice",
+      "reason": "Inspection fees for mold must be approved prior to being incurred, and a copy of the 3rd party invoice should be provided and uploaded to XactAnalysis for approval",
+      "required_info": "Confirm prior approval was obtained and 3rd party invoice was uploaded",
+      "recommended_note": "Mold inspection pre-approved by [name] on [date]. 3rd party invoice uploaded to XactAnalysis.",
+      "guideline_reference": "Page 15"
+    }
+  ],
+
+  "observations": [
+    {
+      "rule_id": "AL_OBS_001",
+      "item_pattern": ["cln"],
+      "category": "CLEANING",
+      "description": "General cleaning (CLN) items should not be needed on Cat 1/2 losses",
+      "severity": "info",
+      "reason": "General cleaning of unaffected fixtures, appliances, cabinetry, walls, flooring, ceilings, windows, etc. should not be required on Category 1 and 2 mitigation losses but may be necessary in a Category 3 event. Additional documentation is required if these line items are utilized",
+      "recommendation": "Verify this is a Category 3 loss or that additional documentation supports the need for general cleaning",
+      "guideline_reference": "Page 12"
+    },
+    {
+      "rule_id": "AL_OBS_002",
+      "item_pattern": ["final clean", "cln finalr"],
+      "category": null,
+      "description": "Final Clean is generally not warranted - most line items already include cleanup",
+      "severity": "info",
+      "reason": "Many Xactimate line items include time for cleanup after the operation is completed, so the final clean line item should not be required on most estimates. If included, an XactAnalysis note explaining the circumstance should be present",
+      "recommendation": "Verify photos and an XactAnalysis/F9 note support why final clean was needed beyond what's already included in other line items",
+      "guideline_reference": "Pages 12, 27"
+    },
+    {
+      "rule_id": "AL_OBS_003",
+      "item_pattern": ["drywall labor", "dry lab"],
+      "category": "DRYWALL",
+      "description": "Hourly drywall labor generally not permitted when line items exist",
+      "severity": "info",
+      "reason": "Hourly labor is not generally permitted when line items exist in Xactimate for suitable estimating. Labor minimums will often supplement labor for smaller jobs instead",
+      "recommendation": "Verify no suitable Xactimate line item exists before using hourly drywall labor",
+      "guideline_reference": "Page 23"
+    },
+    {
+      "rule_id": "AL_OBS_004",
+      "item_pattern": ["dry patch"],
+      "category": "DRYWALL",
+      "description": "Small drywall repairs may be better handled with PNT PATCH",
+      "severity": "info",
+      "reason": "Consider using the item PNT PATCH for small holes, dents, nail pops, etc. Small drywall repairs can often be done in conjunction with painting, which may eliminate the need for a drywall labor minimum",
+      "recommendation": "Verify whether PNT PATCH would be more appropriate than a separate DRY PATCH line item for this repair size",
+      "guideline_reference": "Page 23"
+    },
+    {
+      "rule_id": "AL_OBS_005",
+      "item_pattern": ["dry patch"],
+      "category": "DRYWALL",
+      "description": "Multiple drywall patch operations in the same room may exceed labor actually needed",
+      "severity": "info",
+      "reason": "When using multiple drywall patch operations on the same estimate, verify the total drywall labor provided by individual patch operations does not exceed the amount actually necessary to complete all repairs",
+      "recommendation": "Verify combined labor across all drywall patch line items in this room isn't more than what's actually needed",
+      "guideline_reference": "Page 23",
+      "duplicate_if_room_contains": {
+        "other_item_description_contains": ["patch"]
+      }
+    },
+    {
+      "rule_id": "AL_OBS_006",
+      "item_pattern": ["quarter round"],
+      "category": "PAINTING",
+      "description": "Baseboard and quarter round of the same color should be billed together as PNT BCS",
+      "severity": "info",
+      "reason": "When charging to paint both the baseboard and quarter round, use the PNT BCS line item. Charging to paint them separately is not allowed when they are the same color",
+      "recommendation": "Verify baseboard and quarter round aren't billed as two separate paint charges when they're the same color - use PNT BCS instead",
+      "guideline_reference": "Page 24",
+      "duplicate_if_room_contains": {
+        "other_item_description_contains": ["baseboard"]
+      }
+    },
+    {
+      "rule_id": "AL_OBS_007",
+      "item_pattern": ["masking", "floor protection", "cut in"],
+      "category": "PAINTING",
+      "description": "Masking/floor protection is typically already included in the paint operation's Retail Labor Rate",
+      "severity": "info",
+      "reason": "The Xactimate Retail Labor Rate for paint operations includes time for masking of trim/openings, cut-in time, and floor protection. There is typically no need to add these as separate line items in addition to the paint operation",
+      "recommendation": "Verify this masking/protection charge isn't already covered by the paint line item's Retail Labor Rate",
+      "guideline_reference": "Page 24"
+    },
+    {
+      "rule_id": "AL_OBS_008",
+      "item_pattern": ["two color", "two-color"],
+      "category": "PAINTING",
+      "description": "Two-color paint entry requires pre-loss photo evidence",
+      "severity": "info",
+      "reason": "Pre-loss two color selections must be photographed to show this existed prior to the loss",
+      "recommendation": "Verify pre-loss photos support the two-color paint scheme before including this line item",
+      "guideline_reference": "Page 25"
+    },
+    {
+      "rule_id": "AL_OBS_009",
+      "item_pattern": ["hardwood", "wood floor", "ceramic tile", "stone floor"],
+      "category": "FLOORING",
+      "description": "Wood, ceramic tile, and stone flooring removal requires prior IT approval",
+      "severity": "info",
+      "reason": "Inside Technician approval is required prior to the removal of wood (solid or engineered), ceramic tile, and stone flooring to confirm necessity of removal and what should be done with the flooring sample. Carpet and laminate flooring damaged by water no longer require pre-approval",
+      "recommendation": "Verify prior IT approval was obtained and documented for this flooring removal",
+      "guideline_reference": "Pages 8-9, 26"
+    },
+    {
+      "rule_id": "AL_OBS_010",
+      "item_pattern": ["sand", "refinish"],
+      "category": "FLOORING",
+      "description": "Sanding hardwood may need dust protection or dustless sanding",
+      "severity": "info",
+      "reason": "When sanding hardwood flooring, it may be necessary to seal openings to prevent dust spread. Dustless sanding is permitted and reduces the need for additional dust control or final cleaning in most cases",
+      "recommendation": "Verify dust protection or dustless sanding is reflected if this sanding/refinishing scope would otherwise require a separate dust-control charge",
+      "guideline_reference": "Page 25"
+    },
+    {
+      "rule_id": "AL_OBS_011",
+      "item_pattern": ["haul debris", "debris haul", "pickup truck load"],
+      "category": "GENERAL",
+      "description": "Debris haul quantity should match the actual volume of debris",
+      "severity": "info",
+      "reason": "If a full truck/dumpster load is not required, quantities should be adjusted accordingly (i.e., qty .25, .50, .75 of a full load) based on the volume/weight of items being disposed of",
+      "recommendation": "Verify the debris haul quantity reflects actual volume rather than defaulting to a full load",
+      "guideline_reference": "Pages 11, 28"
+    },
+    {
+      "rule_id": "AL_OBS_012",
+      "item_pattern": ["hmr"],
+      "category": "MITIGATION",
+      "description": "HMR items should not appear on a water mitigation estimate",
+      "severity": "info",
+      "reason": "HMR line items should not be utilized on any water mitigation project - they belong on a separate Asbestos Testing/Abatement or Lead Testing assignment. This is stated directly in the Water Mitigation Requirements section, but since HMR is also legitimately used for asbestos/lead testing assignments, this flag needs manual review to confirm which type of assignment this estimate actually is - lower confidence than other rules here",
+      "recommendation": "Verify this estimate is an Asbestos/Lead Testing or Abatement assignment, not a Water Mitigation assignment, before allowing this HMR item",
+      "guideline_reference": "Page 15"
+    },
+    {
+      "rule_id": "AL_OBS_013",
+      "item_pattern": ["cabinet reface", "cabinet repair", "kitchen cabinet"],
+      "category": null,
+      "description": "Physically damaged kitchen cabinetry may require the itel Cabinet Repair Analysis",
+      "severity": "info",
+      "reason": "As of 3/31/25, the itel Now Mobile App Cabinet Repair Analysis should be used when kitchen cabinets only are damaged, except when there is only damage to the toe kick. If cabinets are a total loss, no app submission is needed, but IT should still be notified",
+      "recommendation": "Verify the itel Cabinet Repair Analysis was completed for this kitchen cabinet damage, unless it's toe-kick-only damage or a total loss",
+      "guideline_reference": "Page 27"
+    },
+    {
+      "rule_id": "AL_OBS_014",
+      "item_pattern": ["emergency service", "esrv"],
+      "category": null,
+      "description": "Only one emergency service call charge is allowed per project",
+      "severity": "info",
+      "reason": "There is only one emergency service call charge per project regardless of the number of crews mobilized to the site",
+      "recommendation": "Verify this isn't a duplicate emergency service call charge - only one is allowed per project",
+      "guideline_reference": "Pages 13, 16",
+      "duplicate_if_room_contains": {
+        "other_item_description_contains": ["emergency service", "esrv"]
+      }
+    }
+  ],
+
+  "notes": [
+    "Blanket depreciation is not allowed (must be directed by IT/Adjuster and applied by line item) - not encoded as a rule since depreciation is an estimate-level field, not a line-item pattern this tool can check.",
+    "No opening statement should be included on the estimate, and the state-specific closing statement is required - these are estimate-header/document content, not line items, so not encoded as rules.",
+    "Contents quantities in excess of 1.0 (e.g. CON ROOM/WTR BLK billed at 1.10, 1.25, 1.50) are allowed but require photo documentation and an F9 note - not encoded as an F9 rule because the F9 check engine matches on description text only and cannot gate on the quantity value, which would cause every normal (exactly 1.0) content manipulation charge to be flagged unnecessarily.",
+    "ITEL is required on carpet/vinyl/laminate/wood flooring replacements of 144 SF or more, and on anything above Standard Grade - not encoded as an observation for the same reason USAA's 250 SF ITEL threshold wasn't encoded: it would need a quantity-threshold observation mechanism (flag only when the item's own quantity exceeds a number) that doesn't exist in this tool yet.",
+    "Drying exceeding 4 days requires IT contact/documentation, and specialty equipment (AFD, etc.) has a pre-approval exemption for 1 day (Cat 1/2) or up to 2 days (Cat 3) - not encoded as hard requirements because duration/day-count isn't reliably available from a single line item's quantity field; encoding these as always-required would falsely flag equipment used well within the exemption.",
+    "Content manipulation room-size tiers (Small <100 SF, Medium 100-150 SF, Large 150-200 SF, X-Large 200+ SF) aren't verified since this tool doesn't currently extract room square footage from estimates.",
+    "Cat 1/2/3 loss category isn't a field this tool extracts from estimates, so several Cat-conditional rules (antimicrobial approval, CLN item necessity, tear-out method by category) are phrased as review reminders rather than hard flags.",
+    "Duplication of tasks between a Mitigation estimate and a Reconstruction estimate for the same job (detach/reset, removals, debris removal, sealing/cleaning) isn't checked - this tool validates one estimate at a time and has no mechanism to compare against a separate, related estimate.",
+    "Estimates should be organized Ceiling-Walls-Floor (or Floor-Walls-Ceiling) with a matching exterior order, and header info (Paul Davis logo, office name/address, franchise code) is required - these are formatting/header requirements, not line-item content."
+  ]
+}
