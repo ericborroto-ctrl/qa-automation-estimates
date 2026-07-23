@@ -356,7 +356,7 @@
     },
     {
       "rule_id": "AL_OBS_007",
-      "item_pattern": ["masking", "floor protection", "cut in"],
+      "item_pattern": ["pnt mask", "floor protection"],
       "category": "PAINTING",
       "description": "Masking/floor protection is typically already included in the paint operation's Retail Labor Rate",
       "severity": "info",
