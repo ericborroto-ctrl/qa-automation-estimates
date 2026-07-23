@@ -156,21 +156,22 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
     # Get styles
     styles = getSampleStyleSheet()
 
-    # Custom styles
-    title_style = ParagraphStyle(
-        'CustomTitle',
+    # Custom styles - Paul Davis brand palette (charcoal + gold, from the
+    # company logo) in place of the generic blue used previously.
+    banner_style = ParagraphStyle(
+        'CustomBanner',
         parent=styles['Heading1'],
-        fontSize=24,
-        textColor=colors.HexColor('#1a1a1a'),
-        spaceAfter=30,
-        alignment=TA_CENTER
+        fontSize=22,
+        textColor=colors.HexColor('#C9A961'),
+        alignment=TA_CENTER,
+        leading=26
     )
 
     heading_style = ParagraphStyle(
         'CustomHeading',
         parent=styles['Heading2'],
         fontSize=16,
-        textColor=colors.HexColor('#2c5aa0'),
+        textColor=colors.HexColor('#96742F'),
         spaceAfter=12,
         spaceBefore=20
     )
@@ -237,9 +238,17 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
     profit = summary.get('profit', 0)
     rcv_total = line_item_total + overhead + profit
 
-    # Title
-    story.append(Paragraph(f"QA Review Report", title_style))
-    story.append(Spacer(1, 0.2*inch))
+    # Title banner - charcoal background with gold text, matching the Paul
+    # Davis logo treatment.
+    banner_table = Table([[Paragraph("QA REVIEW REPORT", banner_style)]], colWidths=[7*inch])
+    banner_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#141414')),
+        ('TOPPADDING', (0, 0), (-1, -1), 14),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 14),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ]))
+    story.append(banner_table)
+    story.append(Spacer(1, 0.25*inch))
 
     # Header info table
     header_data = [
@@ -250,8 +259,8 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
 
     header_table = Table(header_data, colWidths=[1.2*inch, 2*inch, 1.2*inch, 2*inch])
     header_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f0f0f0')),
-        ('BACKGROUND', (2, 0), (2, -1), colors.HexColor('#f0f0f0')),
+        ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#F7F3EC')),
+        ('BACKGROUND', (2, 0), (2, -1), colors.HexColor('#F7F3EC')),
         ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
@@ -302,7 +311,7 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
 
     summary_table = Table(summary_data, colWidths=[3*inch, 3.5*inch])
     summary_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#e8f4f8')),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#F7F3EC')),
         ('BACKGROUND', (0, 1), (-1, 1), colors.HexColor(ALERT_STYLES['violation']['bg'])),
         ('BACKGROUND', (0, 2), (-1, 2), colors.HexColor(ALERT_STYLES['warning']['bg'])),
         ('BACKGROUND', (0, 3), (-1, 3), colors.HexColor(ALERT_STYLES['caution']['bg'])),

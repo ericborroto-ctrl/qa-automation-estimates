@@ -28,9 +28,27 @@ st.markdown("""
     .main-header {
         font-size: 2.5rem;
         font-weight: bold;
-        color: #1f77b4;
+        color: #C9A961;
         text-align: center;
-        padding: 1rem 0;
+        letter-spacing: 1px;
+        padding: 1.25rem 1rem;
+        margin-bottom: 0.5rem;
+        border-radius: 0.5rem;
+        background: linear-gradient(135deg, #141414, #2b2b2b);
+    }
+    .main-subheader {
+        text-align: center;
+        color: #D9D9D9;
+        letter-spacing: 2px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        margin-top: -0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    h2, h3 {
+        color: #1A1A1A !important;
+        border-bottom: 2px solid #96742F;
+        padding-bottom: 0.3rem;
     }
     .success-box {
         padding: 1rem;
@@ -42,10 +60,18 @@ st.markdown("""
     .info-box {
         padding: 1rem;
         border-radius: 0.5rem;
-        background-color: #d1ecf1;
-        border: 1px solid #bee5eb;
+        background-color: #F7F3EC;
+        border: 1px solid #96742F;
         margin: 1rem 0;
     }
+    .brand-footer {
+        text-align: center;
+        color: #D9D9D9;
+        padding: 1.5rem 1rem;
+        border-radius: 0.5rem;
+        background: linear-gradient(135deg, #141414, #2b2b2b);
+    }
+    .brand-footer strong { color: #C9A961; }
     .alert-legend-row {
         display: flex;
         align-items: flex-start;
@@ -133,6 +159,7 @@ if 'report_path' not in st.session_state:
 
 # Header
 st.markdown('<div class="main-header">🔍 USAA Estimate QA Automation</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-subheader">Paul Davis &bull; Property Restoration Experts</div>', unsafe_allow_html=True)
 st.markdown("---")
 
 # Sidebar
@@ -148,15 +175,18 @@ with st.sidebar:
     st.markdown("---")
 
     st.header("📊 System Info")
-    st.info("""
-    **Status:** ✅ Ready
-
-    **Features:**
-    - OCR support for scanned PDFs
-    - Carrier-specific validation
-    - F9 note recommendations
-    - Professional PDF reports
-    """)
+    st.markdown("""
+    <div class="info-box">
+    <b>Status:</b> ✅ Ready<br><br>
+    <b>Features:</b>
+    <ul style="margin:0.25rem 0 0 0; padding-left: 1.1rem;">
+    <li>OCR support for scanned PDFs</li>
+    <li>Carrier-specific validation</li>
+    <li>F9 note recommendations</li>
+    <li>Professional PDF reports</li>
+    </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.markdown("---")
 
@@ -398,8 +428,8 @@ if st.session_state.processed and st.session_state.report_path:
 # Footer
 st.markdown("---")
 st.markdown("""
-<div style='text-align: center; color: #666; padding: 2rem 0;'>
-    <p><strong>QA Reconstruction Estimate Automation System</strong></p>
+<div class="brand-footer">
+    <p><strong>Paul Davis &bull; QA Reconstruction Estimate Automation System</strong></p>
     <p>Automated validation against carrier guidelines | Powered by OCR & AI</p>
 </div>
 """, unsafe_allow_html=True)
