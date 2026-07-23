@@ -34,7 +34,8 @@ st.markdown("""
         padding: 1.25rem 1rem;
         margin-bottom: 0.5rem;
         border-radius: 0.5rem;
-        background: linear-gradient(135deg, #141414, #2b2b2b);
+        background: linear-gradient(135deg, #000000, #2b2b2b);
+        border: 1px solid #96742F;
     }
     .main-subheader {
         text-align: center;
@@ -46,8 +47,8 @@ st.markdown("""
         margin-bottom: 1.5rem;
     }
     h2, h3 {
-        color: #1A1A1A !important;
-        border-bottom: 2px solid #96742F;
+        color: #FFFFFF !important;
+        border-bottom: 2px solid #C9A961;
         padding-bottom: 0.3rem;
     }
     .success-box {
@@ -55,6 +56,7 @@ st.markdown("""
         border-radius: 0.5rem;
         background-color: #d4edda;
         border: 1px solid #c3e6cb;
+        color: #1A1A1A;
         margin: 1rem 0;
     }
     .info-box {
@@ -62,6 +64,7 @@ st.markdown("""
         border-radius: 0.5rem;
         background-color: #F7F3EC;
         border: 1px solid #96742F;
+        color: #1A1A1A;
         margin: 1rem 0;
     }
     .brand-footer {
@@ -69,7 +72,8 @@ st.markdown("""
         color: #D9D9D9;
         padding: 1.5rem 1rem;
         border-radius: 0.5rem;
-        background: linear-gradient(135deg, #141414, #2b2b2b);
+        background: linear-gradient(135deg, #000000, #2b2b2b);
+        border: 1px solid #96742F;
     }
     .brand-footer strong { color: #C9A961; }
     .alert-legend-row {
@@ -90,8 +94,8 @@ st.markdown("""
         font-weight: bold;
         font-size: 1rem;
     }
-    .alert-legend-text b { display: block; }
-    .alert-legend-text span { color: #666; font-size: 0.85rem; }
+    .alert-legend-text b { display: block; color: #FFFFFF; }
+    .alert-legend-text span { color: #B3B3B3; font-size: 0.85rem; }
     .alert-summary-card {
         border-radius: 0.5rem;
         padding: 1rem;
@@ -99,8 +103,8 @@ st.markdown("""
         border: 1px solid;
     }
     .alert-summary-count { font-size: 2rem; font-weight: bold; }
-    .alert-summary-label { font-weight: 600; margin-top: 0.25rem; }
-    .alert-summary-sub { font-size: 0.8rem; color: #666; }
+    .alert-summary-label { font-weight: 600; margin-top: 0.25rem; color: #1A1A1A; }
+    .alert-summary-sub { font-size: 0.8rem; color: #555555; }
     </style>
 """, unsafe_allow_html=True)
 
