@@ -12,6 +12,7 @@ import os
 import math
 from pathlib import Path
 from datetime import datetime
+from xml.sax.saxutils import escape
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -193,6 +194,19 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
         fontSize=10,
     )
 
+    header_value_style = ParagraphStyle(
+        'HeaderValue',
+        parent=normal_style,
+        fontSize=10,
+        leading=12,
+    )
+
+    def header_cell(value):
+        """Wrap a header table value in a Paragraph so long text (client
+        names, long estimate IDs) wraps within the column instead of
+        overflowing past it - plain strings in a Table cell don't wrap."""
+        return Paragraph(escape(str(value)), header_value_style)
+
     # Extract data
     estimate_id = estimate_json.get('estimate_id', 'Unknown')
     client = estimate_json.get('metadata', {}).get('client', 'Unknown')
@@ -252,9 +266,9 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
 
     # Header info table
     header_data = [
-        ['Estimate ID:', estimate_id, 'Client:', client],
-        ['Estimate Date:', date, 'Review Date:', datetime.now().strftime('%Y-%m-%d')],
-        ['Carrier:', carrier, 'Original Total:', f'${rcv_total:,.2f}']
+        ['Estimate ID:', header_cell(estimate_id), 'Client:', header_cell(client)],
+        ['Estimate Date:', header_cell(date), 'Review Date:', header_cell(datetime.now().strftime('%Y-%m-%d'))],
+        ['Carrier:', header_cell(carrier), 'Original Total:', header_cell(f'${rcv_total:,.2f}')]
     ]
 
     header_table = Table(header_data, colWidths=[1.2*inch, 2*inch, 1.2*inch, 2*inch])
