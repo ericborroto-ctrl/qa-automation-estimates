@@ -132,7 +132,17 @@ def extract_line_items_from_text(text, estimate_id):
             # Rather than anchor on what precedes the quantity, anchor on
             # QTY+UNIT+PRICE wherever it appears on the line, then lazily
             # capture the final dollar amount as the total.
-            qty_pattern = r'([\d,]+\.?\d*)\s*([A-Z]{1,4})\s+([\d,]+\.?\d*)\+.+?([\d,]+\.\d{2})\s*$'
+            # Between UNIT and the price, Xactimate sometimes inserts an
+            # extra token with no "+" suffix: an ITEL price-override marker
+            # ("526.22SF [*] 0.00+ ...") or a reference value on detach/reset
+            # items ("1.00EA 23.59 0.00+ ..."). Skip over any such tokens
+            # non-greedily rather than requiring the price to immediately
+            # follow the unit. The leading negative lookbehind and requiring
+            # a digit after any decimal point keep this from starting a
+            # match mid-identifier - e.g. the "0." inside a calc code like
+            # "FNHTBAR_0.EA" would otherwise look like a valid quantity and
+            # steal the match from the real "1.00EA" a few tokens later.
+            qty_pattern = r'(?<![A-Za-z0-9_.])([\d,]+(?:\.\d+)?)\s*([A-Z]{1,4})\s+(?:\S+\s+)*?([\d,]+\.?\d*)\+.+?([\d,]+\.\d{2})\s*$'
             qty_match = re.search(qty_pattern, next_line)
 
             if qty_match:
