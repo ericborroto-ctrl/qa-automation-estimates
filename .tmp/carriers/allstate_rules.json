@@ -75,7 +75,7 @@
       "category": "CONTENTS",
       "description": "Content manipulation hourly charges are not acceptable",
       "reason": "Content Manipulation should be billed by the room size (CON ROOM / WTR BLK). Hourly charges are not acceptable",
-      "guideline_reference": "Pages 10, 12, 21"
+      "guideline_reference": "Pages 10, 12, 15"
     },
     {
       "rule_id": "AL_DA_010",
@@ -99,7 +99,7 @@
       "category": "CONTENTS",
       "description": "Electronics/textile cleaning must be referred to an approved vendor, not billed directly",
       "reason": "All electronics and textile handling is to be referred to an Allstate approved vendor - PDR is not on the vendor program for these services. The mitigation/contents vendor should not contact these providers directly with an assignment",
-      "guideline_reference": "Pages 19-21"
+      "guideline_reference": "Pages 19-20, 22"
     },
     {
       "rule_id": "AL_DA_013",
@@ -116,6 +116,60 @@
       "description": "No bid items, lump sums, or miscellaneous items on asbestos testing/abatement",
       "reason": "No bid items, lump sums or miscellaneous items should be submitted on asbestos testing or abatement assignments",
       "guideline_reference": "Pages 18-19"
+    },
+    {
+      "rule_id": "AL_DA_015",
+      "item_pattern": [
+        "carpet flooring", "carpet - remove & replace", "carpet replacement",
+        "vinyl flooring", "vinyl plank flooring", "sheet vinyl flooring",
+        "laminate flooring",
+        "hardwood flooring", "wood flooring - remove & replace", "engineered wood flooring",
+        "ceramic tile flooring", "porcelain tile flooring", "stone flooring"
+      ],
+      "category": "FLOORING",
+      "description": "Flooring repair/replacement must be referred to CCA Global, not billed by Paul Davis",
+      "reason": "On any Allstate repair assignment, Paul Davis documents, estimates, and addresses all damages except flooring. Flooring repair/replacement must be referred back to the claim owner/adjuster to involve CCA Global, who handles all flooring repair/replacement services. (ITEL is still required on flooring of 144 sq ft or more.)",
+      "guideline_reference": "Page 25"
+    },
+    {
+      "rule_id": "AL_DA_016",
+      "item_pattern": ["subcontractor", "sub-contractor", "sub contract"],
+      "category": null,
+      "description": "Subcontractor use is prohibited - all losses must be handled by Paul Davis directly",
+      "reason": "All losses will be handled by Paul Davis directly - the use of a subcontractor is prohibited",
+      "guideline_reference": "Pages 16, 19"
+    },
+    {
+      "rule_id": "AL_DA_017",
+      "item_pattern": ["snow removal", "ice removal", "remove snow", "remove ice", "snow/ice removal"],
+      "category": "ROOFING",
+      "description": "Snow/ice removal from a roof must never be billed or performed",
+      "reason": "Do not remove, or recommend to the insured that they remove, snow/ice from the roof - this activity creates a potentially dangerous situation. A Network Contractor should not be assigned to remove snow/ice from a roof",
+      "guideline_reference": "Page 33"
+    },
+    {
+      "rule_id": "AL_DA_018",
+      "item_pattern": ["after business hours", "outside business hours", "after-hours labor", "after hours labor"],
+      "category": null,
+      "description": "Individual after-hours line items are not permitted outside the single Emergency Service Call charge",
+      "reason": "Individual after-hours line items should not be used (i.e., tear out wet non-salvage carpet, cut/bag - after business hours). Use only standard during-business-hours line items throughout the body of the estimate - the only legitimate after-hours charge is the single Emergency Service Call",
+      "guideline_reference": "Page 12"
+    },
+    {
+      "rule_id": "AL_DA_019",
+      "item_pattern": ["per vault", "vault charge", "storage - vault", "storage per vault"],
+      "category": "CONTENTS",
+      "description": "Storage may not be billed per vault",
+      "reason": "Storage charges of personal property are charged by square foot per month based on volume, using climate-controlled storage pricing. Per-vault charges are not to be used",
+      "guideline_reference": "Pages 22-23"
+    },
+    {
+      "rule_id": "AL_DA_020",
+      "item_pattern": ["truck charge - employee", "vehicle charge - employee", "mileage - employee", "moving employees to", "moving equipment to"],
+      "category": "CONTENTS",
+      "description": "Charges for moving employees or equipment to/from the job site are not permitted",
+      "reason": "Loading/unloading and truck charges are appropriate only for moving personal property. Charges for moving employees or equipment to and from the job site are not permitted",
+      "guideline_reference": "Page 21"
     }
   ],
 
@@ -284,6 +338,76 @@
       "required_info": "Confirm prior approval was obtained and 3rd party invoice was uploaded",
       "recommended_note": "Mold inspection pre-approved by [name] on [date]. 3rd party invoice uploaded to XactAnalysis.",
       "guideline_reference": "Page 15"
+    },
+    {
+      "rule_id": "AL_F9_014",
+      "item_pattern": ["bric-a-brac", "bric a brac", "high density", "low density"],
+      "category": "CONTENTS",
+      "description": "Bric-a-Brac/High Density/Low Density box charges require adjuster pre-approval",
+      "reason": "Use of Bric-a-Brac, High Density or Low Density box types should not be used - any deviation requires pre-approval by the adjuster during the initial scope of work",
+      "required_info": "Confirm adjuster pre-approval was obtained for this box type during the initial scope of work",
+      "recommended_note": "Bric-a-Brac/High Density/Low Density box type pre-approved by adjuster [name] on [date] during initial scope. See XactAnalysis notes.",
+      "guideline_reference": "Page 19"
+    },
+    {
+      "rule_id": "AL_F9_015",
+      "item_pattern": ["pack out", "pack-out", "pod ", "pods"],
+      "category": "CONTENTS",
+      "description": "Pack-Out/Storage/POD requires documented adjuster or IT pre-approval before work begins",
+      "reason": "Adjuster approval is required prior to all Pack-Out and Storage requests, and requests to pack out must be pre-approved by the Inside Technician/Adjuster before work begins",
+      "required_info": "Confirm adjuster/IT approval was obtained prior to beginning pack-out/storage/POD work",
+      "recommended_note": "Pack-out/storage/POD pre-approved by [Adjuster/IT name] on [date], prior to work beginning. See XactAnalysis notes.",
+      "guideline_reference": "Page 21"
+    },
+    {
+      "rule_id": "AL_F9_016",
+      "item_pattern": ["supervisor", "supervisory"],
+      "category": null,
+      "description": "Supervisor/supervisory hours require pre-approval and a note explaining tasks completed",
+      "reason": "Supervisor hours apply only to complex losses requiring specialty operations or coordination of additional specialty vendors. All supervisory charges require a note explaining the supervisory tasks completed and must be pre-approved and documented by the adjuster",
+      "required_info": "Explain the supervisory tasks completed and confirm adjuster pre-approval",
+      "recommended_note": "Supervisor hours for [complexity/coordination reason]. Pre-approved by adjuster [name] on [date]. See XactAnalysis notes.",
+      "guideline_reference": "Page 22"
+    },
+    {
+      "rule_id": "AL_F9_017",
+      "item_pattern": ["full service survey", "asbtpa"],
+      "category": "MITIGATION",
+      "description": "Asbestos Full-Service Survey requires prior IT approval",
+      "reason": "Any Full-Service Surveys shall be pre-approved by an IT. Per-sample testing does not require pre-approval",
+      "required_info": "Confirm this is a Full-Service Survey (not per-sample testing) and that IT pre-approval was obtained",
+      "recommended_note": "Full-Service Survey pre-approved by IT [name] on [date]. See XactAnalysis notes.",
+      "guideline_reference": "Page 8"
+    },
+    {
+      "rule_id": "AL_F9_018",
+      "item_pattern": ["heavy clean"],
+      "category": "CLEANING",
+      "description": "Heavy clean requires advance adjuster approval and a reason note",
+      "reason": "Heavy clean must be approved in advance by the adjuster and a note provided indicating the reason it was needed",
+      "required_info": "Confirm advance adjuster approval and explain why heavy clean (vs. standard clean) was needed",
+      "recommended_note": "Heavy clean approved in advance by adjuster [name] on [date]. Reason: [explanation]. See photos.",
+      "guideline_reference": "Page 19"
+    },
+    {
+      "rule_id": "AL_F9_019",
+      "item_pattern": ["hydroxyl"],
+      "category": null,
+      "description": "Hydroxyl Generator use requires adjuster pre-approval",
+      "reason": "Hydroxyl Generator should be pre-approved by the adjuster; charges are per 24-hour period",
+      "required_info": "Confirm adjuster pre-approval and the number of 24-hour periods billed",
+      "recommended_note": "Hydroxyl Generator pre-approved by adjuster [name] on [date]. Billed for [count] 24-hour period(s).",
+      "guideline_reference": "Page 20"
+    },
+    {
+      "rule_id": "AL_F9_020",
+      "item_pattern": ["unpack"],
+      "category": "CONTENTS",
+      "description": "Unpacking customer boxes on request requires IT pre-approval",
+      "reason": "Allstate as a standard will not pay to unpack boxes by request of the homeowner - any labor for unpacking customer items must be pre-approved by the IT and documented well",
+      "required_info": "Confirm IT pre-approval was obtained for this unpacking labor",
+      "recommended_note": "Unpacking labor pre-approved by IT [name] on [date] at homeowner's request. See XactAnalysis notes.",
+      "guideline_reference": "Page 21"
     }
   ],
 
@@ -382,7 +506,7 @@
       "severity": "info",
       "reason": "Inside Technician approval is required prior to the removal of wood (solid or engineered), ceramic tile, and stone flooring to confirm necessity of removal and what should be done with the flooring sample. Carpet and laminate flooring damaged by water no longer require pre-approval",
       "recommendation": "Verify prior IT approval was obtained and documented for this flooring removal",
-      "guideline_reference": "Pages 8-9, 26"
+      "guideline_reference": "Pages 8-9, 15"
     },
     {
       "rule_id": "AL_OBS_010",
@@ -436,6 +560,49 @@
       "duplicate_if_room_contains": {
         "other_item_description_contains": ["emergency service", "esrv"]
       }
+    },
+    {
+      "rule_id": "AL_OBS_015",
+      "item_pattern": ["con room", "wtr blk"],
+      "category": "CONTENTS",
+      "description": "Only one content manipulation charge is allowed per room",
+      "severity": "info",
+      "reason": "Only 1 manipulation charge should be used per room, based on its size and quantity of contents",
+      "recommendation": "Verify this room doesn't have more than one CON ROOM/WTR BLK content manipulation charge",
+      "guideline_reference": "Page 10",
+      "duplicate_if_room_contains": {
+        "other_item_description_contains": ["con room", "wtr blk"]
+      }
+    },
+    {
+      "rule_id": "AL_OBS_016",
+      "item_pattern": ["gutter", "downspout", "drip edge", "exhaust vent"],
+      "category": "PAINTING",
+      "description": "Painting gutters, downspouts, vents, and drip edge is generally not warranted",
+      "severity": "info",
+      "reason": "Gutters/downspouts, vents and drip edge are available in a wide variety of colors and should only be painted if the original items were painted a unique color which is not available from the manufacturer",
+      "recommendation": "Verify the original color is confirmed unavailable from the manufacturer before including this paint charge",
+      "guideline_reference": "Page 31"
+    },
+    {
+      "rule_id": "AL_OBS_017",
+      "item_pattern": ["test clean", "test cleaning"],
+      "category": null,
+      "description": "Test cleaning requires photo documentation of the area, item, and sponge/cloth used",
+      "severity": "info",
+      "reason": "Test cleaning is required to show the extent of smoke/soot damage - photos of test cleaning must include the area of the test, the item tested, and a photo of the sponge/cloth used",
+      "recommendation": "Verify photos of the test area, item, and sponge/cloth are attached to support this test cleaning charge",
+      "guideline_reference": "Page 17"
+    },
+    {
+      "rule_id": "AL_OBS_018",
+      "item_pattern": ["antimicrobial"],
+      "category": "MITIGATION",
+      "description": "Antimicrobial use requires prior IT approval on Category 1 losses",
+      "severity": "info",
+      "reason": "Antimicrobial use is not permitted on Category 1 losses without prior approval by an Inside Technician, for which adequate support must be provided. This tool doesn't extract Cat 1/2/3 loss category from estimates, so this is flagged as a review reminder on any antimicrobial item rather than gated to Cat 1 only",
+      "recommendation": "Verify this isn't a Category 1 loss, or that prior IT approval was obtained and documented for this antimicrobial charge",
+      "guideline_reference": "Page 12"
     }
   ],
 
@@ -443,6 +610,7 @@
     "Blanket depreciation is not allowed (must be directed by IT/Adjuster and applied by line item) - not encoded as a rule since depreciation is an estimate-level field, not a line-item pattern this tool can check.",
     "No opening statement should be included on the estimate, and the state-specific closing statement is required - these are estimate-header/document content, not line items, so not encoded as rules.",
     "Contents quantities in excess of 1.0 (e.g. CON ROOM/WTR BLK billed at 1.10, 1.25, 1.50) are allowed but require photo documentation and an F9 note - not encoded as an F9 rule because the F9 check engine matches on description text only and cannot gate on the quantity value, which would cause every normal (exactly 1.0) content manipulation charge to be flagged unnecessarily.",
+    "Specialty trades (electrical, plumbing, HVAC, etc.) over $300 require IT pre-approval (Pages 8-9) - not encoded as a rule because it needs a dollar-threshold mechanism gated on the item's own total, which doesn't exist in this tool yet; encoding it as an always-fire rule would falsely flag every plumbing/electrical/HVAC line item regardless of value.",
     "ITEL is required on carpet/vinyl/laminate/wood flooring replacements of 144 SF or more, and on anything above Standard Grade - not encoded as an observation for the same reason USAA's 250 SF ITEL threshold wasn't encoded: it would need a quantity-threshold observation mechanism (flag only when the item's own quantity exceeds a number) that doesn't exist in this tool yet.",
     "Drying exceeding 4 days requires IT contact/documentation, and specialty equipment (AFD, etc.) has a pre-approval exemption for 1 day (Cat 1/2) or up to 2 days (Cat 3) - not encoded as hard requirements because duration/day-count isn't reliably available from a single line item's quantity field; encoding these as always-required would falsely flag equipment used well within the exemption.",
     "Content manipulation room-size tiers (Small <100 SF, Medium 100-150 SF, Large 150-200 SF, X-Large 200+ SF) aren't verified since this tool doesn't currently extract room square footage from estimates.",
