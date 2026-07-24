@@ -16,3 +16,4 @@ pytesseract
 PyMuPDF
 Pillow
 streamlit
+streamlit-authenticator

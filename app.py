@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 from datetime import datetime
 import shutil
+import streamlit_authenticator as stauth
 
 # Page config
 st.set_page_config(
@@ -21,6 +22,43 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# --- Login gate ---
+# Credentials live in st.secrets (.streamlit/secrets.toml locally, or the
+# Streamlit Cloud Secrets manager when hosted) - never in source control.
+# See .streamlit/secrets.toml.example for the expected structure, and
+# tools/generate_password_hash.py to create a hashed password for a new user.
+if "auth" not in st.secrets:
+    st.error(
+        "No login credentials configured. Copy `.streamlit/secrets.toml.example` "
+        "to `.streamlit/secrets.toml` and fill in at least one user "
+        "(see DEPLOY.md for instructions)."
+    )
+    st.stop()
+
+credentials = {
+    "usernames": {
+        username: dict(info)
+        for username, info in st.secrets["auth"]["credentials"]["usernames"].items()
+    }
+}
+
+authenticator = stauth.Authenticate(
+    credentials,
+    st.secrets["auth"]["cookie_name"],
+    st.secrets["auth"]["cookie_key"],
+    st.secrets["auth"]["cookie_expiry_days"],
+    auto_hash=False,  # passwords in secrets.toml are already bcrypt-hashed
+)
+
+authenticator.login()
+
+if st.session_state.get("authentication_status") is False:
+    st.error("Username or password is incorrect.")
+    st.stop()
+elif st.session_state.get("authentication_status") is None:
+    st.warning("Please log in to use the QA Automation tool.")
+    st.stop()
 
 # Custom CSS
 st.markdown("""
@@ -168,6 +206,10 @@ st.markdown("---")
 
 # Sidebar
 with st.sidebar:
+    st.caption(f"Logged in as **{st.session_state.get('name')}**")
+    authenticator.logout("Log out", "sidebar")
+    st.markdown("---")
+
     st.header("⚙️ Settings")
 
     carrier = st.selectbox(
