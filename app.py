@@ -270,7 +270,10 @@ if uploaded_file:
     upload_dir = Path(".tmp/uploads")
     upload_dir.mkdir(parents=True, exist_ok=True)
 
-    pdf_path = upload_dir / uploaded_file.name
+    # Strip any directory components from the browser-supplied filename so a
+    # crafted name (e.g. "../../secrets.toml") can't write outside upload_dir.
+    safe_name = os.path.basename(uploaded_file.name.replace("\\", "/"))
+    pdf_path = upload_dir / safe_name
 
     with open(pdf_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
