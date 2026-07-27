@@ -104,6 +104,59 @@ def has_duplicate_context(line_item, room_index, duplicate_rule):
     return False
 
 
+# Carrier-agnostic structural checks - these apply to every estimate
+# regardless of carrier (current or future), so they're built in here rather
+# than sourced from a carrier's rules JSON, and aren't tied to a specific
+# guideline page. They inspect a whole room's set of line items rather than
+# a single item's description, unlike the pattern-matched rules above.
+STRUCTURAL_ROOM_RULES = [
+    {
+        'rule_id': 'GEN_ROOM_DOORWINDOW',
+        'keywords': ['door', 'window'],
+        'description': 'Room may be missing a doorway/window in the sketch',
+        'reason': 'No door or window line item was found for this room.',
+        'recommendation': "Make sure this room has a doorway in the sketch if it has one, and/or a window.",
+        'guideline_reference': 'Paul Davis QA Standard',
+    },
+]
+
+
+def check_structural_room_observations(room_index):
+    """Room-level checks that don't hinge on any single line item's pattern -
+    e.g. flagging a room with no door/window line item anywhere in it."""
+    observations = []
+
+    for room, items in room_index.items():
+        if room == 'Unknown' or not items:
+            continue
+
+        descriptions = [item['description'].lower() for item in items]
+
+        for rule in STRUCTURAL_ROOM_RULES:
+            has_keyword = any(
+                keyword in desc for desc in descriptions for keyword in rule['keywords']
+            )
+            if has_keyword:
+                continue
+
+            anchor_item = items[0]
+            observations.append({
+                'line_item': anchor_item['line_number'],
+                'description': f"Room: {room}",
+                'category': anchor_item.get('category', 'OTHER'),
+                'total': 0,
+                'rule_id': rule['rule_id'],
+                'observation_type': rule['description'],
+                'severity': 'info',
+                'reason': rule['reason'],
+                'recommendation': rule['recommendation'],
+                'guideline_reference': rule['guideline_reference'],
+                'matched_pattern': None,
+            })
+
+    return observations
+
+
 def check_observations(line_item, observation_rules, estimate_id, room_index=None):
     """Check if a line item has observations worth noting."""
     observations = []
@@ -216,6 +269,10 @@ def main():
         for line_item in line_items:
             observations = check_observations(line_item, observation_rules, estimate_id, room_index)
             all_observations.extend(observations)
+
+        # Carrier-agnostic room-level checks (door/window presence, etc.) -
+        # always run, independent of which carrier's rules were loaded.
+        all_observations.extend(check_structural_room_observations(room_index))
 
         # Create output structure
         output_data = {
