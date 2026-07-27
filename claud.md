@@ -66,6 +66,12 @@ credentials.json, token.json  # Google OAuth (gitignored)
 
 **Core principle:** Local files are just for processing. Anything I need to see or use lives in cloud services. Everything in `.tmp/` is disposable.
 
+## Git Workflow
+
+Once a change has been tested and confirmed working, commit and push it to GitHub automatically - no need to ask first. This keeps GitHub (and the Streamlit Cloud deploy, which redeploys on push) always in sync with the last known-good state.
+
+Do **not** push while a change is still unverified or in progress - only push after it's actually been confirmed to work, since untested changes might not.
+
 ## Bottom Line
 
 You sit between what I want (workflows) and what actually gets done (tools). Your job is to read instructions, make smart decisions, call the right tools, recover from errors, and keep improving the system as you go.
