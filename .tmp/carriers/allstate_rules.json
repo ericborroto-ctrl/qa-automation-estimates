@@ -118,20 +118,6 @@
       "guideline_reference": "Pages 18-19"
     },
     {
-      "rule_id": "AL_DA_015",
-      "item_pattern": [
-        "carpet flooring", "carpet - remove & replace", "carpet replacement",
-        "vinyl flooring", "vinyl plank flooring", "sheet vinyl flooring",
-        "laminate flooring",
-        "hardwood flooring", "wood flooring - remove & replace", "engineered wood flooring",
-        "ceramic tile flooring", "porcelain tile flooring", "stone flooring"
-      ],
-      "category": "FLOORING",
-      "description": "Flooring repair/replacement must be referred to CCA Global, not billed by Paul Davis",
-      "reason": "On any Allstate repair assignment, Paul Davis documents, estimates, and addresses all damages except flooring. Flooring repair/replacement must be referred back to the claim owner/adjuster to involve CCA Global, who handles all flooring repair/replacement services. (ITEL is still required on flooring of 144 sq ft or more.)",
-      "guideline_reference": "Page 25"
-    },
-    {
       "rule_id": "AL_DA_016",
       "item_pattern": ["subcontractor", "sub-contractor", "sub contract"],
       "category": null,
