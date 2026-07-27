@@ -206,6 +206,7 @@ CODE_PREFIX_CATEGORIES = {
     'CPS': 'CONTENTS',
     'CDC': 'CONTENTS',
     'CON': 'CONTENTS',
+    'CAB': 'CABINETRY',
 }
 
 
