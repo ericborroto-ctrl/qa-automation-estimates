@@ -107,15 +107,36 @@ def has_duplicate_context(line_item, room_index, duplicate_rule):
 # Carrier-agnostic structural checks - these apply to every estimate
 # regardless of carrier (current or future), so they're built in here rather
 # than sourced from a carrier's rules JSON, and aren't tied to a specific
-# guideline page. They inspect a whole room's set of line items rather than
-# a single item's description, unlike the pattern-matched rules above.
+# guideline page. They inspect a whole room (its name and/or its full set of
+# line items) rather than a single item's description, unlike the
+# pattern-matched rules above.
+#
+# 'match_on' picks how a rule decides whether a room needs flagging:
+#   'item_keywords' - flag the room if NONE of its line items mention any of
+#                      `keywords` (e.g. no door/window item anywhere in it).
+#   'room_name'      - flag the room whenever its name contains any of
+#                       `room_name_keywords`, regardless of its line items.
+#                       Used for checks the tool can't actually verify from
+#                       extracted data (e.g. whether sketch blocks were
+#                       drawn) - it's a standing reminder, not a real check.
 STRUCTURAL_ROOM_RULES = [
     {
         'rule_id': 'GEN_ROOM_DOORWINDOW',
+        'match_on': 'item_keywords',
         'keywords': ['door', 'window'],
         'description': 'Room may be missing a doorway/window in the sketch',
         'reason': 'No door or window line item was found for this room.',
         'recommendation': "Make sure this room has a doorway in the sketch if it has one, and/or a window.",
+        'guideline_reference': 'Paul Davis QA Standard',
+    },
+    {
+        'rule_id': 'GEN_ROOM_SKETCH_BLOCKS',
+        'match_on': 'room_name',
+        'room_name_keywords': ['kitchen', 'bath'],
+        'description': 'Kitchen/bathroom rooms need blocks in the sketch for accurate square footage',
+        'reason': 'Kitchens and bathrooms typically have cabinets, islands, tubs, or showers that should be '
+                   'blocked out in the sketch so they get deducted from the room\'s square footage.',
+        'recommendation': 'Verify blocks were used in the sketch for this room to correctly deduct square footage.',
         'guideline_reference': 'Paul Davis QA Standard',
     },
 ]
@@ -123,7 +144,8 @@ STRUCTURAL_ROOM_RULES = [
 
 def check_structural_room_observations(room_index):
     """Room-level checks that don't hinge on any single line item's pattern -
-    e.g. flagging a room with no door/window line item anywhere in it."""
+    e.g. flagging a room with no door/window line item anywhere in it, or
+    reminding about sketch blocks for kitchen/bathroom rooms."""
     observations = []
 
     for room, items in room_index.items():
@@ -131,12 +153,19 @@ def check_structural_room_observations(room_index):
             continue
 
         descriptions = [item['description'].lower() for item in items]
+        room_lower = room.lower()
 
         for rule in STRUCTURAL_ROOM_RULES:
-            has_keyword = any(
-                keyword in desc for desc in descriptions for keyword in rule['keywords']
-            )
-            if has_keyword:
+            if rule['match_on'] == 'item_keywords':
+                has_keyword = any(
+                    keyword in desc for desc in descriptions for keyword in rule['keywords']
+                )
+                if has_keyword:
+                    continue
+            elif rule['match_on'] == 'room_name':
+                if not any(kw in room_lower for kw in rule['room_name_keywords']):
+                    continue
+            else:
                 continue
 
             anchor_item = items[0]
