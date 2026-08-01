@@ -112,20 +112,21 @@ def has_duplicate_context(line_item, room_index, duplicate_rule):
 # pattern-matched rules above.
 #
 # 'match_on' picks how a rule decides whether a room needs flagging:
-#   'item_keywords' - flag the room if NONE of its line items mention any of
-#                      `keywords` (e.g. no door/window item anywhere in it).
-#   'room_name'      - flag the room whenever its name contains any of
-#                       `room_name_keywords`, regardless of its line items.
-#                       Used for checks the tool can't actually verify from
-#                       extracted data (e.g. whether sketch blocks were
-#                       drawn) - it's a standing reminder, not a real check.
+#   'always'    - flag every room unconditionally. Used for checks the tool
+#                 can't actually verify from extracted data (e.g. whether a
+#                 door/window or a sketch block was actually drawn) - it's a
+#                 standing reminder, not a real check.
+#   'room_name' - flag the room whenever its name contains any of
+#                 `room_name_keywords`, regardless of its line items. Same
+#                 "can't verify, so remind" reasoning as 'always', just
+#                 scoped to certain room types.
 STRUCTURAL_ROOM_RULES = [
     {
         'rule_id': 'GEN_ROOM_DOORWINDOW',
-        'match_on': 'item_keywords',
-        'keywords': ['door', 'window'],
-        'description': 'Room may be missing a doorway/window in the sketch',
-        'reason': 'No door or window line item was found for this room.',
+        'match_on': 'always',
+        'description': 'Verify this room has a doorway/window in the sketch',
+        'reason': "The tool can't verify door/window presence from the sketch - a line-item check isn't a "
+                  "reliable stand-in, since a room can have a real door/window with no replacement line item.",
         'recommendation': "Make sure this room has a doorway in the sketch if it has one, and/or a window.",
         'guideline_reference': 'Paul Davis QA Standard',
     },
@@ -144,28 +145,21 @@ STRUCTURAL_ROOM_RULES = [
 
 def check_structural_room_observations(room_index):
     """Room-level checks that don't hinge on any single line item's pattern -
-    e.g. flagging a room with no door/window line item anywhere in it, or
-    reminding about sketch blocks for kitchen/bathroom rooms."""
+    standing reminders about the sketch (door/window presence, kitchen/
+    bathroom blocks) that the tool can't verify from extracted line items."""
     observations = []
 
     for room, items in room_index.items():
         if room == 'Unknown' or not items:
             continue
 
-        descriptions = [item['description'].lower() for item in items]
         room_lower = room.lower()
 
         for rule in STRUCTURAL_ROOM_RULES:
-            if rule['match_on'] == 'item_keywords':
-                has_keyword = any(
-                    keyword in desc for desc in descriptions for keyword in rule['keywords']
-                )
-                if has_keyword:
-                    continue
-            elif rule['match_on'] == 'room_name':
+            if rule['match_on'] == 'room_name':
                 if not any(kw in room_lower for kw in rule['room_name_keywords']):
                     continue
-            else:
+            elif rule['match_on'] != 'always':
                 continue
 
             anchor_item = items[0]
