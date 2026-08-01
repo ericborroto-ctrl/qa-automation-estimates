@@ -120,10 +120,13 @@ def has_duplicate_context(line_item, room_index, duplicate_rule):
 #                 `room_name_keywords`, regardless of its line items. Same
 #                 "can't verify, so remind" reasoning as 'always', just
 #                 scoped to certain room types.
+# 'exclude_room_name_keywords' (optional, any match_on) - skip the room if
+# its name contains any of these, checked before match_on.
 STRUCTURAL_ROOM_RULES = [
     {
         'rule_id': 'GEN_ROOM_DOORWINDOW',
         'match_on': 'always',
+        'exclude_room_name_keywords': ['kitchen'],
         'description': 'Verify this room has a doorway/window in the sketch',
         'reason': "The tool can't verify door/window presence from the sketch - a line-item check isn't a "
                   "reliable stand-in, since a room can have a real door/window with no replacement line item.",
@@ -156,6 +159,10 @@ def check_structural_room_observations(room_index):
         room_lower = room.lower()
 
         for rule in STRUCTURAL_ROOM_RULES:
+            exclude_keywords = rule.get('exclude_room_name_keywords', [])
+            if any(kw in room_lower for kw in exclude_keywords):
+                continue
+
             if rule['match_on'] == 'room_name':
                 if not any(kw in room_lower for kw in rule['room_name_keywords']):
                     continue
