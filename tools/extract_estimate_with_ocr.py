@@ -276,7 +276,8 @@ def extract_metadata(text, pdf_path):
         'client': 'Unknown',
         'date': 'Unknown',
         'address': 'Unknown',
-        'adjuster': 'Unknown'
+        'adjuster': 'Unknown',
+        'has_paul_davis_header': bool(re.search(r'paul\s+davis', text, re.IGNORECASE))
     }
 
     # Try to extract metadata from text

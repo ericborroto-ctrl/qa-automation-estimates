@@ -345,7 +345,8 @@ if uploaded_file:
                 ("check_disallowed_items.py", "Disallowed Items"),
                 ("check_f9_notes.py", "F9 Notes"),
                 ("check_observations.py", "Observations"),
-                ("check_quantity_limits.py", "Quantity Limits")
+                ("check_quantity_limits.py", "Quantity Limits"),
+                ("check_header.py", "Paul Davis Header")
             ]
 
             validation_results = {}
@@ -376,11 +377,13 @@ if uploaded_file:
             quantities_file = issues_dir / f"quantities_{estimate_id}.json"
             f9_notes_file = issues_dir / f"f9_notes_{estimate_id}.json"
             observations_file = issues_dir / f"observations_{estimate_id}.json"
+            header_file = issues_dir / f"header_{estimate_id}.json"
 
             disallowed_count = 0
             quantities_count = 0
             f9_count = 0
             obs_count = 0
+            header_count = 0
 
             if disallowed_file.exists():
                 with open(disallowed_file) as f:
@@ -398,12 +401,17 @@ if uploaded_file:
                 with open(observations_file) as f:
                     obs_count = json.load(f).get('observations_found', 0)
 
+            if header_file.exists():
+                with open(header_file) as f:
+                    header_count = json.load(f).get('issues_found', 0)
+
             # Violations = things the carrier won't allow (disallowed items,
-            # quantity limits exceeded) - must be resolved in the estimate.
-            # Warnings = things that need a line-item note to justify them
-            # (F9 note requirements) - resolvable with a good note.
-            # Cautions = worth reviewing, no action required (observations).
-            violations_count = disallowed_count + quantities_count
+            # quantity limits exceeded) plus missing-header, all of which
+            # must be resolved in the estimate. Warnings = things that need
+            # a line-item note to justify them (F9 note requirements) -
+            # resolvable with a good note. Cautions = worth reviewing, no
+            # action required (observations).
+            violations_count = disallowed_count + quantities_count + header_count
             warnings_count = f9_count
             cautions_count = obs_count
 

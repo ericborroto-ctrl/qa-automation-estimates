@@ -103,7 +103,8 @@ def load_all_issues(issues_dir, estimate_id):
         'quantities': None,
         'depreciation': None,
         'f9_notes': None,
-        'observations': None
+        'observations': None,
+        'header': None
     }
 
     issues_path = Path(issues_dir)
@@ -134,6 +135,11 @@ def load_all_issues(issues_dir, estimate_id):
     observations_file = issues_path / f'observations_{estimate_id}.json'
     if observations_file.exists():
         issues_data['observations'] = load_json(observations_file)
+
+    # Load header check
+    header_file = issues_path / f'header_{estimate_id}.json'
+    if header_file.exists():
+        issues_data['header'] = load_json(header_file)
 
     return issues_data
 
@@ -224,6 +230,7 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
     quantities_count = 0
     f9_notes_count = 0
     observations_count = 0
+    header_count = 0
 
     if issues_data['disallowed']:
         disallowed_count = issues_data['disallowed'].get('issues_found', 0)
@@ -237,10 +244,13 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
     if issues_data['observations']:
         observations_count = issues_data['observations'].get('observations_found', 0)
 
-    # Violations = disallowed items + quantity limit violations (must be
-    # resolved). Warnings = F9 note requirements (resolvable with a note).
-    # Cautions = observations (informational).
-    violations_count = disallowed_count + quantities_count
+    if issues_data['header']:
+        header_count = issues_data['header'].get('issues_found', 0)
+
+    # Violations = disallowed items + quantity limit violations + missing
+    # header (must be resolved). Warnings = F9 note requirements (resolvable
+    # with a note). Cautions = observations (informational).
+    violations_count = disallowed_count + quantities_count + header_count
     warnings_count = f9_notes_count
     cautions_count = observations_count
     total_alerts = violations_count + warnings_count + cautions_count
@@ -418,6 +428,24 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
                     story.append(Spacer(1, 0.2*inch))
                     violation_idx += 1
 
+            if header_count > 0:
+                for issue in issues_data['header']['issues']:
+                    story.append(Paragraph(f"Violation #{violation_idx}: {issue['description']}", subheading_style))
+
+                    issue_data = [
+                        ['Line Item:', 'N/A (document-level)'],
+                        ['Category:', issue.get('category', 'Document')],
+                        ['Reason:', Paragraph(issue['reason'], normal_style)],
+                        ['Recommendation:', Paragraph(issue['recommendation'], normal_style)],
+                        ['Reference:', issue.get('guideline_reference', 'N/A')]
+                    ]
+
+                    issue_table = Table(issue_data, colWidths=[1.5*inch, 5*inch])
+                    issue_table.setStyle(violation_row_style)
+                    story.append(issue_table)
+                    story.append(Spacer(1, 0.2*inch))
+                    violation_idx += 1
+
     # Warnings section (F9 notes) - ALWAYS show if there are any
     if warnings_count > 0:
         story.append(PageBreak())
@@ -536,6 +564,14 @@ def generate_pdf_report(estimate_json, issues_data, output_path):
                 story.append(Spacer(1, 0.1*inch))
                 action_num += 1
 
+        # Actions from a missing Paul Davis header
+        if header_count > 0:
+            for issue in issues_data['header']['issues']:
+                action_text = f"{action_num}. <b>Add</b> the Paul Davis company header to this estimate."
+                story.append(Paragraph(action_text, normal_style))
+                story.append(Spacer(1, 0.1*inch))
+                action_num += 1
+
         # Summary of adjustments
         if total_adjustment > 0:
             revised_total = rcv_total - total_adjustment
@@ -631,7 +667,8 @@ def main():
         # Print summary
         violations = sum([
             issues_data['disallowed'].get('issues_found', 0) if issues_data['disallowed'] else 0,
-            issues_data['quantities'].get('issues_found', 0) if issues_data['quantities'] else 0
+            issues_data['quantities'].get('issues_found', 0) if issues_data['quantities'] else 0,
+            issues_data['header'].get('issues_found', 0) if issues_data['header'] else 0
         ])
         warnings = issues_data['f9_notes'].get('f9_notes_required', 0) if issues_data['f9_notes'] else 0
         cautions = issues_data['observations'].get('observations_found', 0) if issues_data['observations'] else 0
