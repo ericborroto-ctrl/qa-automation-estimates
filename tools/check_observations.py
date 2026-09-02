@@ -143,6 +143,19 @@ STRUCTURAL_ROOM_RULES = [
         'recommendation': 'Verify blocks were used in the sketch for this room to correctly deduct square footage.',
         'guideline_reference': 'Paul Davis QA Standard',
     },
+    {
+        'rule_id': 'GEN_ROOM_NO_LITERAL_GENERAL',
+        'match_on': 'room_name',
+        'room_name_keywords': ['general'],
+        'room_name_exact_match': True,
+        'description': "A literal 'General' room shouldn't exist on the sketch",
+        'reason': "General-category line items (Emergency Service Call, equipment setup/monitoring, content "
+                  "manipulation, PPE, HEPA filters, debris haul, etc.) that apply to the whole job belong in a "
+                  "'General' category grouping, but should not be placed in an actual room drawn on the sketch.",
+        'recommendation': "Verify 'General' isn't an actual room on the sketch - general-category items should "
+                          "be grouped without a corresponding sketched room.",
+        'guideline_reference': 'Paul Davis QA Standard',
+    },
 ]
 
 
@@ -156,7 +169,7 @@ def check_structural_room_observations(room_index):
         if room == 'Unknown' or not items:
             continue
 
-        room_lower = room.lower()
+        room_lower = room.lower().strip()
 
         for rule in STRUCTURAL_ROOM_RULES:
             exclude_keywords = rule.get('exclude_room_name_keywords', [])
@@ -164,7 +177,10 @@ def check_structural_room_observations(room_index):
                 continue
 
             if rule['match_on'] == 'room_name':
-                if not any(kw in room_lower for kw in rule['room_name_keywords']):
+                if rule.get('room_name_exact_match'):
+                    if room_lower not in rule['room_name_keywords']:
+                        continue
+                elif not any(kw in room_lower for kw in rule['room_name_keywords']):
                     continue
             elif rule['match_on'] != 'always':
                 continue
@@ -228,6 +244,16 @@ def check_observations(line_item, observation_rules, estimate_id, room_index=Non
         duplicate_rule = rule.get('duplicate_if_room_contains')
         if match_found and duplicate_rule and room_index is not None:
             if not has_duplicate_context(line_item, room_index, duplicate_rule):
+                match_found = False
+
+        # Only fires when the item's own extracted quantity meets a minimum -
+        # e.g. "ITEL required on flooring replacements of 144 SF or more".
+        # Assumes the rule's item_pattern already scopes this to items where
+        # quantity is a meaningful SF/unit measure (e.g. flooring materials).
+        quantity_threshold = rule.get('quantity_threshold')
+        if match_found and quantity_threshold:
+            item_quantity = line_item.get('quantity', 0)
+            if item_quantity < quantity_threshold.get('min', 0):
                 match_found = False
 
         if match_found:

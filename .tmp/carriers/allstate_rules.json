@@ -589,6 +589,33 @@
       "reason": "Antimicrobial use is not permitted on Category 1 losses without prior approval by an Inside Technician, for which adequate support must be provided. This tool doesn't extract Cat 1/2/3 loss category from estimates, so this is flagged as a review reminder on any antimicrobial item rather than gated to Cat 1 only",
       "recommendation": "Verify this isn't a Category 1 loss, or that prior IT approval was obtained and documented for this antimicrobial charge",
       "guideline_reference": "Page 12"
+    },
+    {
+      "rule_id": "AL_OBS_019",
+      "item_pattern": [
+        "carpet flooring", "carpet - remove & replace", "carpet replacement",
+        "vinyl flooring", "vinyl plank flooring", "sheet vinyl flooring",
+        "laminate flooring",
+        "hardwood flooring", "wood flooring - remove & replace", "engineered wood flooring",
+        "ceramic tile flooring", "porcelain tile flooring", "stone flooring"
+      ],
+      "category": "FLOORING",
+      "quantity_threshold": {"min": 144},
+      "description": "ITEL required on flooring replacements of 144 SF or more",
+      "severity": "info",
+      "reason": "ITEL is required on all carpet, vinyl, laminate/wood, ceramic tile, and stone flooring replacements of 144 square feet or more, and on anything above Standard Grade regardless of size.",
+      "recommendation": "Verify an ITEL was submitted (mobile app preferred) and the results are uploaded to XactAnalysis for this flooring replacement.",
+      "guideline_reference": "Page 26"
+    },
+    {
+      "rule_id": "AL_OBS_020",
+      "item_pattern": ["cdc mn service"],
+      "category": "CONTENTS",
+      "description": "CDC MN Service flat fee should reflect the 26-100 unique item tier",
+      "severity": "info",
+      "reason": "The $125 flat fee using CDC MN Service - Minimum Charge applies specifically to 26-100 unique inventory items (25 and under is included in the mitigation/contents assignment fee; over 100 items is not an approved scope for Paul Davis to inventory).",
+      "recommendation": "Verify the inventory item count actually falls in the 26-100 range for this flat fee, and that it's documented with an F9 note.",
+      "guideline_reference": "Page 19"
     }
   ],
 
@@ -596,12 +623,17 @@
     "Blanket depreciation is not allowed (must be directed by IT/Adjuster and applied by line item) - not encoded as a rule since depreciation is an estimate-level field, not a line-item pattern this tool can check.",
     "No opening statement should be included on the estimate, and the state-specific closing statement is required - these are estimate-header/document content, not line items, so not encoded as rules.",
     "Contents quantities in excess of 1.0 (e.g. CON ROOM/WTR BLK billed at 1.10, 1.25, 1.50) are allowed but require photo documentation and an F9 note - not encoded as an F9 rule because the F9 check engine matches on description text only and cannot gate on the quantity value, which would cause every normal (exactly 1.0) content manipulation charge to be flagged unnecessarily.",
-    "Specialty trades (electrical, plumbing, HVAC, etc.) over $300 require IT pre-approval (Pages 8-9) - not encoded as a rule because it needs a dollar-threshold mechanism gated on the item's own total, which doesn't exist in this tool yet; encoding it as an always-fire rule would falsely flag every plumbing/electrical/HVAC line item regardless of value.",
-    "ITEL is required on carpet/vinyl/laminate/wood flooring replacements of 144 SF or more, and on anything above Standard Grade - not encoded as an observation for the same reason USAA's 250 SF ITEL threshold wasn't encoded: it would need a quantity-threshold observation mechanism (flag only when the item's own quantity exceeds a number) that doesn't exist in this tool yet.",
+    "Specialty trades (electrical, plumbing, HVAC, etc.) over $300 require IT pre-approval (Pages 8-9) - still not encoded. check_observations.py now supports a quantity_threshold mechanism (used for the 144 SF ITEL rule below), but that gates on the item's own extracted *quantity*, not its dollar *total* - a dollar-threshold mechanism would need to be added separately before this can be encoded without falsely flagging every plumbing/electrical/HVAC line item regardless of value.",
     "Drying exceeding 4 days requires IT contact/documentation, and specialty equipment (AFD, etc.) has a pre-approval exemption for 1 day (Cat 1/2) or up to 2 days (Cat 3) - not encoded as hard requirements because duration/day-count isn't reliably available from a single line item's quantity field; encoding these as always-required would falsely flag equipment used well within the exemption.",
     "Content manipulation room-size tiers (Small <100 SF, Medium 100-150 SF, Large 150-200 SF, X-Large 200+ SF) aren't verified since this tool doesn't currently extract room square footage from estimates.",
     "Cat 1/2/3 loss category isn't a field this tool extracts from estimates, so several Cat-conditional rules (antimicrobial approval, CLN item necessity, tear-out method by category) are phrased as review reminders rather than hard flags.",
-    "Duplication of tasks between a Mitigation estimate and a Reconstruction estimate for the same job (detach/reset, removals, debris removal, sealing/cleaning) isn't checked - this tool validates one estimate at a time and has no mechanism to compare against a separate, related estimate.",
-    "Estimates should be organized Ceiling-Walls-Floor (or Floor-Walls-Ceiling) with a matching exterior order, and header info (Paul Davis logo, office name/address, franchise code) is required - these are formatting/header requirements, not line-item content."
+    "Duplication of tasks between a Mitigation estimate and a Reconstruction estimate for the same job (detach/reset, removals, debris removal, sealing/cleaning), and duplication of contents handling across multiple job types for the same provider, isn't checked - this tool validates one estimate at a time and has no mechanism to compare against a separate, related estimate.",
+    "Estimates should be organized Ceiling-Walls-Floor (or Floor-Walls-Ceiling) with a matching exterior order, and header info (Paul Davis logo, complete office name, address, email, phone/fax, franchise code) is required - these are formatting/header requirements, not line-item content. check_header.py verifies the Paul Davis company name appears at all, but doesn't independently verify the franchise code or other individual header fields are present.",
+    "Platform/workflow requirements - MICA Mobility drying-log data, MICA SmartAudit, the 6-step Validate pre-scrub/review process, ClaimXperience video uploads, PWD scoring, SLA timestamps (Customer Contacted, Site Inspected, Job Started/Completed), and Work Authorization/Certificate of Completion signatures - are entirely out of scope: none of this exists in an exported Xactimate line-item estimate PDF, so this tool has no way to verify compliance with them.",
+    "Photo documentation requirements (the Front of Risk / Initial Inspection / Source of Loss / Demo / Bagged for Disposal / Equipment / Completed Work / Continuous Areas / Pre-Existing Damages / Subrogation / Supplements labeling table, Pages 34-36) aren't checked - this tool only processes the estimate's line items, not the photos uploaded to XactAnalysis.",
+    "Estimate Pricelist (must use Checkpoint Price List, not updated on supplements), Line-Item Overrides (no Market Conditions option), and RVT (Residential Valuation Tool prohibited for GHRN contractors) are Xactimate configuration/tool-usage requirements, not things that appear as line-item text - not encoded.",
+    "Lead Paint Safety Wording is required on properties built 1978 or earlier with paint/destructive tear-out work - not encoded since the property's build year isn't a field this tool extracts from estimates.",
+    "The Estimate Fee Schedule (Page 33) and Mistaken Assignment fee only apply to Estimate-Only/Scoping assignment types, which this tool has no way to distinguish from a normal reconstruction estimate - not encoded.",
+    "EagleView roof diagram cross-referencing (verifying every slope/gable in the estimate matches the EagleView report) isn't checked - this tool has no access to the EagleView report, only the Xactimate estimate."
   ]
 }
