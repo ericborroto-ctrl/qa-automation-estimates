@@ -616,6 +616,33 @@
       "reason": "The $125 flat fee using CDC MN Service - Minimum Charge applies specifically to 26-100 unique inventory items (25 and under is included in the mitigation/contents assignment fee; over 100 items is not an approved scope for Paul Davis to inventory).",
       "recommendation": "Verify the inventory item count actually falls in the 26-100 range for this flat fee, and that it's documented with an F9 note.",
       "guideline_reference": "Page 19"
+    },
+    {
+      "rule_id": "AL_OBS_021",
+      "item_pattern": ["paint (1 coat)"],
+      "exact_match": true,
+      "category": "PAINTING",
+      "description": "Under-scoped paint coats - this room has new/damaged drywall requiring the full sealer plus two coats",
+      "severity": "info",
+      "reason": "When painting new or damaged drywall or plaster, the new/damaged area should include a sealer coat and two coats of paint (three total coats). This room has drywall repair/replacement work, but its paint line item only reflects a sealer coat plus a single coat of paint.",
+      "recommendation": "Upgrade this paint line item to reflect sealer + two coats (e.g. the two-coat SKU instead of the single-coat one) to match the drywall work in this room.",
+      "guideline_reference": "Page 24",
+      "flag_only_if_room_has": {
+        "component_keywords": ["hung, taped", "tape joint for new"]
+      }
+    },
+    {
+      "rule_id": "AL_OBS_022",
+      "item_pattern": ["hung, taped", "tape joint for new"],
+      "category": "DRYWALL",
+      "description": "Drywall repair with no corresponding paint line item found in this room",
+      "severity": "info",
+      "reason": "New or damaged drywall/plaster should include a sealer coat and two coats of paint (three total coats). No painting line item was found anywhere in this room.",
+      "recommendation": "Add a paint line item (sealer + two coats) for this room's drywall repair, or verify painting is genuinely out of scope for this room.",
+      "guideline_reference": "Page 24",
+      "flag_if_room_lacks": {
+        "component_keywords": ["pnt "]
+      }
     }
   ],
 

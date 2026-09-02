@@ -224,12 +224,23 @@ def check_observations(line_item, observation_rules, estimate_id, room_index=Non
         match_found = False
         matched_pattern = None
         for pattern in item_patterns:
-            # Fuzzy match for flexibility with OCR errors
-            similarity = fuzz.partial_ratio(pattern.lower(), description.lower())
-            if similarity > 75:  # 75% similarity threshold for observations
-                match_found = True
-                matched_pattern = pattern
-                break
+            if rule.get('exact_match'):
+                # Fuzzy matching is unsafe when a pattern differs from its
+                # opposite meaning by nearly nothing textually - e.g. "paint
+                # (1 coat)" vs "paint (2 coats)" score ~86% similar under
+                # fuzz.partial_ratio despite being opposite scope amounts.
+                # Rules like that need a literal substring match instead.
+                if pattern.lower() in description.lower():
+                    match_found = True
+                    matched_pattern = pattern
+                    break
+            else:
+                # Fuzzy match for flexibility with OCR errors
+                similarity = fuzz.partial_ratio(pattern.lower(), description.lower())
+                if similarity > 75:  # 75% similarity threshold for observations
+                    match_found = True
+                    matched_pattern = pattern
+                    break
 
         suppression_rule = rule.get('suppress_if_room_contains')
         if match_found and suppression_rule and room_index is not None:
@@ -239,6 +250,15 @@ def check_observations(line_item, observation_rules, estimate_id, room_index=Non
         requirement_rule = rule.get('flag_if_room_lacks')
         if match_found and requirement_rule and room_index is not None:
             if has_required_context(line_item, room_index, requirement_rule):
+                match_found = False
+
+        # Inverse of flag_if_room_lacks: the trigger item is only a problem
+        # when the room ALSO has some other context - e.g. an under-scoped
+        # single-coat paint item is only wrong if the room has new/damaged
+        # drywall work requiring the full sealer + two coats.
+        only_if_present_rule = rule.get('flag_only_if_room_has')
+        if match_found and only_if_present_rule and room_index is not None:
+            if not has_required_context(line_item, room_index, only_if_present_rule):
                 match_found = False
 
         duplicate_rule = rule.get('duplicate_if_room_contains')
