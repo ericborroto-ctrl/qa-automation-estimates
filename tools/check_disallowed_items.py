@@ -35,11 +35,15 @@ def check_item_against_rules(line_item, disallowed_rules, confidence_threshold=9
     best_confidence = 0
 
     for rule in disallowed_rules:
-        # Category exact match increases confidence
-        category_match = False
-        if rule.get('category') and category:
-            if rule['category'].upper() == category:
-                category_match = True
+        # A rule scoped to a specific category (e.g. a mitigation-only
+        # restriction like "no labor minimums on mitigation estimates")
+        # must not fire on items from a different category (e.g. a
+        # legitimate drywall labor minimum on a reconstruction estimate) -
+        # a rule with no category is unscoped and applies to every item.
+        if rule.get('category') and rule['category'].upper() != category:
+            continue
+
+        category_match = bool(rule.get('category'))
 
         # Check each pattern in the rule
         for pattern in rule['item_pattern']:

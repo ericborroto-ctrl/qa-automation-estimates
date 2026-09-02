@@ -54,8 +54,14 @@ def check_item_against_quantity_rules(line_item, quantity_rules):
     description = line_item['description'].lower()
     quantity = line_item.get('quantity', 0)
     unit = line_item.get('unit', '').lower()
+    category = line_item.get('category', '').upper() if line_item.get('category') else None
 
     for rule in quantity_rules:
+        # A rule scoped to a specific category must not fire on items from
+        # a different category - a rule with no category is unscoped.
+        if rule.get('category') and rule['category'].upper() != category:
+            continue
+
         # Check if description matches rule pattern
         pattern_match = False
         for pattern in rule['item_pattern']:
