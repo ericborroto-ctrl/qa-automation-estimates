@@ -32,11 +32,12 @@ def check_f9_requirements(line_item, f9_rules, estimate_id):
     for rule in f9_rules:
         rule_id = rule['rule_id']
         item_patterns = rule.get('item_pattern', [])
-        rule_categories = rule.get('categories', [])
+        rule_category = rule.get('category')
         applies_to = rule.get('applies_to', None)
 
-        # Check if rule applies to this category
-        if rule_categories and category not in rule_categories:
+        # A rule scoped to a specific category must not fire on items from
+        # a different category - a rule with no category is unscoped.
+        if rule_category and rule_category != category:
             continue
 
         # Check for pattern matches
