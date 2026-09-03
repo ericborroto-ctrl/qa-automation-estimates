@@ -265,6 +265,12 @@ def check_observations(line_item, observation_rules, estimate_id, room_index=Non
         rule_category = rule.get('category', None)
         severity = rule.get('severity', 'info')
 
+        # Estimate-wide duplicate rules are only evaluated by
+        # check_estimate_level_observations(), which sees every line item
+        # at once - evaluating them here too would double-flag matches.
+        if rule.get('duplicate_across_estimate_by_category'):
+            continue
+
         # Check if rule applies to this category
         if rule_category and category != rule_category:
             continue

@@ -214,7 +214,7 @@ with st.sidebar:
 
     carrier = st.selectbox(
         "Select Carrier",
-        ["USAA", "Allstate"],
+        ["USAA", "Allstate", "THIG"],
         help="Choose the insurance carrier for validation"
     )
 

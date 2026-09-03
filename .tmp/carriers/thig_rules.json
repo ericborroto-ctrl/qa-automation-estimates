@@ -1,0 +1,269 @@
+{
+  "carrier": "THIG",
+  "version": "Edition Date: 02.17.2025",
+  "source_document": "THIG QC Guidelines 02.17.2025.pdf",
+  "notes_program_scope": "Tower Hill Insurance Group (THIG) CastleCare/Alacrity program, covering Field Inspectors and Independent Adjusters. THIG's approved estimating platform is Symbility/CoreLogic, not Xactimate - line item text and category codes look different from the Allstate/USAA (Xactimate) estimates this tool was originally built against. Extraction has not yet been verified against a real Symbility-formatted estimate PDF; see project notes.",
+
+  "disallowed_items": [
+    {
+      "rule_id": "THIG_DA_001",
+      "item_pattern": ["drive time", "driving time", "travel time", "mileage", "fuel charge", "rental vehicle"],
+      "category": null,
+      "description": "Drive time and travel charges are not allowed",
+      "reason": "Driving time is not allowed at any time. If you receive an assignment, it is in the geographical area you stated you could cover. Traveling charges not allowed include, but not limited to, fuel, van or truck usage, rental vehicles, and labor hours to get to and from the loss site.",
+      "guideline_reference": "Page 10"
+    },
+    {
+      "rule_id": "THIG_DA_002",
+      "item_pattern": ["contents cleaning", "textile cleaning", "electronics cleaning"],
+      "category": "CONTENTS",
+      "description": "Contents/textile/electronics cleaning should be billed direct to the carrier, not on the contractor's estimate",
+      "reason": "The carrier has pricing in place with both CRDN and FRSTeam. The contents cleaning portion of any job will be submitted directly to the carrier and not through the contractor or CastleCare.",
+      "guideline_reference": "Page 13"
+    }
+  ],
+
+  "quantity_limits": [],
+
+  "overhead_profit_restrictions": [
+    {
+      "rule_id": "THIG_OP_001",
+      "description": "O&P does not apply to Water Mitigation Work",
+      "reason": "Per the O&P Reference Table, Water Mitigation Work is not eligible for Overhead & Profit.",
+      "guideline_reference": "Page 9"
+    },
+    {
+      "rule_id": "THIG_OP_002",
+      "description": "O&P does not apply to Mold Remediation",
+      "reason": "Per the O&P Reference Table, Mold Remediation is not eligible for Overhead & Profit.",
+      "guideline_reference": "Page 9"
+    },
+    {
+      "rule_id": "THIG_OP_003",
+      "description": "O&P does not apply to Emergency Services",
+      "reason": "O & P should not be applied to an emergency service invoice (i.e., water extraction, board-ups, tarping, etc.).",
+      "guideline_reference": "Page 9"
+    },
+    {
+      "rule_id": "THIG_OP_004",
+      "description": "O&P does not apply to Minimum Charges",
+      "reason": "Minimum charges are not considered a trade when determining Overhead and Profit (1 minimum per trade per estimate).",
+      "guideline_reference": "Page 8"
+    },
+    {
+      "rule_id": "THIG_OP_005",
+      "description": "O&P does not apply to Roof Only jobs",
+      "reason": "Roofing is not considered an applicable trade for Overhead and Profit.",
+      "guideline_reference": "Page 9"
+    },
+    {
+      "rule_id": "THIG_OP_006",
+      "description": "O&P does not apply to Single Trade Work",
+      "reason": "Per the O&P Reference Table, jobs involving only a single trade are not eligible for Overhead & Profit - O&P is reasonable when subcontractor(s) work is required along with general contractor oversight for coordination.",
+      "guideline_reference": "Page 9"
+    },
+    {
+      "rule_id": "THIG_OP_007",
+      "description": "O&P is applicable to Multiple Trade Work",
+      "reason": "Overhead and profit application is to be considered when a repair job reasonably requires the use of subcontractors and requires general contractor oversight for coordination.",
+      "guideline_reference": "Page 9"
+    },
+    {
+      "rule_id": "THIG_OP_008",
+      "description": "O&P must be non-cumulative, not applied to tax, and capped at 10%/20% total",
+      "reason": "O&P should be applied as non-cumulative, not applied to tax amount on the Symbility/CoreLogic estimate, and no more than 10% or 20% in total.",
+      "guideline_reference": "Page 9"
+    },
+    {
+      "rule_id": "THIG_OP_009",
+      "description": "Roofing claim O&P scope depends on whether there's interior damage",
+      "reason": "On roofing claims where there is interior damage, O&P applies to all line items. On roofing claims where there is exterior damage in addition to roofing, O&P will apply to all other items except the roof.",
+      "guideline_reference": "Page 9"
+    },
+    {
+      "rule_id": "THIG_OP_010",
+      "description": "O&P is not allowed on EMS assignments during a catastrophe event",
+      "reason": "Overhead and Profit is NOT allowed on any EMS assignment during a CAT event unless Tower Hill adjusts this rule prior to or during the event. It is allowed on a repair assignment following standard O&P rules.",
+      "guideline_reference": "Page 19"
+    },
+    {
+      "rule_id": "THIG_OP_011",
+      "description": "Plumbing Only queue: O&P is allowed, but only on the plumbing inspection bill",
+      "reason": "Plumbing Only queue assignments are allowed to have O&P added since the GC has taken on the responsibility of finding and maintaining plumbing resources. The O&P applies only with the plumbing inspection bill and is paid to the GC as an expense.",
+      "guideline_reference": "Page 9"
+    }
+  ],
+
+  "f9_note_requirements": [
+    {
+      "rule_id": "THIG_F9_001",
+      "item_pattern": ["bid item"],
+      "category": null,
+      "description": "Bid items require detailed job-specific notes",
+      "reason": "Bid item notes should contain specific details related to the specific job, not found in Symbility/CoreLogic. If a third-party contractor estimate is available, include the approximate estimate amount with consideration to reasonableness. If none is available, attempt an approximate reasonable dollar figure along with detailed notes on what the job/bid entails.",
+      "required_info": "Third-party estimate amount if available, or a reasonable dollar figure with details on what the job/bid entails",
+      "recommended_note": "Bid item for [scope]. [Third-party estimate amount / reasonable dollar estimate] based on [reasoning]. See supporting documentation.",
+      "guideline_reference": "Page 7"
+    },
+    {
+      "rule_id": "THIG_F9_002",
+      "item_pattern": ["cabinet"],
+      "category": null,
+      "description": "Kitchen cabinetry damage needs an ITEL Now Cabinet Repair Analysis or the $500 fee documented",
+      "reason": "A referral through the ITEL Now phone app to evaluate kitchen cabinets should be completed to confirm feasibility of repair on 100% of kitchen cabinets exhibiting damage (also applies to 6 linear feet of cabinets with damage outside the kitchen). CastleCare contractors may choose to apply a $500 services fee in lieu of the cabinet work.",
+      "required_info": "Confirm the ITEL Now Cabinet Repair Analysis was completed, or that the $500 fee alternative was applied",
+      "recommended_note": "ITEL Now Cabinet Repair Analysis completed [date] - [feasibility result], or $500 fee applied in lieu of cabinet repair work.",
+      "guideline_reference": "Page 8"
+    },
+    {
+      "rule_id": "THIG_F9_003",
+      "item_pattern": ["prop", "propped"],
+      "category": null,
+      "description": "Countertop prop method must follow the $250 min + $10/LF over 5' pricing",
+      "reason": "Existing countertops should be propped up during the demo and cabinet repair process. The prop method can be charged $250 min plus $10 a LF for anything over 5'.",
+      "required_info": "Linear footage of countertop propped, confirming pricing follows the $250 minimum plus $10/LF over 5'",
+      "recommended_note": "Countertop prop method: [X] LF at $250 min + $10/LF over 5' = $[total].",
+      "guideline_reference": "Page 11"
+    },
+    {
+      "rule_id": "THIG_F9_004",
+      "item_pattern": ["permit"],
+      "category": null,
+      "description": "Permit fees should be a zero-dollar provisional line item with an incurred-basis note",
+      "reason": "Permit fees shall be paid on an incurred basis. Include a zero-dollar line item followed by a comment within the estimate stating, \"Permit fees will be considered on an incurred basis.\"",
+      "required_info": "Confirm this is a zero-dollar provisional item with the incurred-basis note",
+      "recommended_note": "Permit fees will be considered on an incurred basis.",
+      "guideline_reference": "Page 11"
+    },
+    {
+      "rule_id": "THIG_F9_005",
+      "item_pattern": ["supervisor", "supervision", "project management"],
+      "category": null,
+      "description": "Supervisor/Project Management hours require approval and time sheet documentation",
+      "reason": "Non-productive Site Supervision/Project Management must be approved and reviewed on a case-by-case basis. Supervisory hours billed may need time sheets provided as supporting documentation. A supervisor doing only a site visit is not considered productive labor and is part of the contractor's overhead and profit.",
+      "required_info": "Confirm approval was obtained and time sheets support the hours billed for an actual work task performed (not just a site visit)",
+      "recommended_note": "Supervisor hours for [work task performed]. Approved by [name] on [date]. Time sheet attached.",
+      "guideline_reference": "Page 10"
+    },
+    {
+      "rule_id": "THIG_F9_006",
+      "item_pattern": ["emergency service"],
+      "category": null,
+      "description": "Emergency Service charge outside standard water/fire mitigation needs documentation",
+      "reason": "For losses other than water mitigation services, an \"Emergency Service\" charge can be made during business hours in the event a service crew is pulled from another job to perform the related tasks. It must be documented in the line-item notes stating this situation was the case at hand.",
+      "required_info": "Confirm a crew was pulled from another job to perform this emergency task",
+      "recommended_note": "Emergency Service charge - crew pulled from [other job] to perform this task during business hours.",
+      "guideline_reference": "Page 12"
+    },
+    {
+      "rule_id": "THIG_F9_007",
+      "item_pattern": ["after hours"],
+      "category": null,
+      "description": "After Hours fee requires documentation it isn't being abused",
+      "reason": "The carrier will honor \"After Hours\" fees when an emergency services assignment is assigned after hours or deployment occurs after the hours of 8am-5pm Monday through Friday - okay to charge after hours fees but not to be abused.",
+      "required_info": "Confirm the assignment/deployment time genuinely fell outside 8am-5pm Monday-Friday",
+      "recommended_note": "After Hours fee - assignment received/deployment occurred at [time] on [date], outside standard 8am-5pm M-F hours.",
+      "guideline_reference": "Pages 12-13"
+    },
+    {
+      "rule_id": "THIG_F9_008",
+      "item_pattern": ["packing", "storage"],
+      "category": "CONTENTS",
+      "description": "Additional packing/storage charges beyond routine contents manipulation require approval",
+      "reason": "Any additional charges for packing and storage are subject to approval. Time and expense can be considered in lieu of square footage pricing if incurred.",
+      "required_info": "Confirm approval was obtained for these additional packing/storage charges",
+      "recommended_note": "Additional packing/storage approved by [name] on [date].",
+      "guideline_reference": "Page 13"
+    }
+  ],
+
+  "observations": [
+    {
+      "rule_id": "THIG_OBS_001",
+      "item_pattern": ["tile flooring", "stone flooring", "solid wood floor", "hardwood floor"],
+      "category": "FLOORING",
+      "quantity_threshold": {"max": 100},
+      "description": "Small tile/stone/solid wood flooring damage should be referred to Nativo",
+      "severity": "info",
+      "reason": "Tile, stone, and solid wood flooring damage where damage is 100 sq ft or less should be referred to Nativo.",
+      "recommendation": "Verify this flooring damage (100 SF or less) was referred to Nativo rather than scoped directly.",
+      "guideline_reference": "Page 12"
+    },
+    {
+      "rule_id": "THIG_OBS_002",
+      "item_pattern": ["tree removal"],
+      "category": null,
+      "dollar_threshold": {"min": 7500},
+      "description": "Tree removal subcontractor bids over $7,500 require adjuster pre-approval",
+      "severity": "info",
+      "reason": "If a vendor is using a tree removal subcontractor, the subcontractor's invoice must be uploaded. If the subcontractor's estimate is greater than $7,500, adjuster pre-approval must be obtained prior to work commencing.",
+      "recommendation": "Verify adjuster pre-approval was obtained prior to work commencing, and the subcontractor invoice is uploaded.",
+      "guideline_reference": "Page 13"
+    },
+    {
+      "rule_id": "THIG_OBS_003",
+      "item_pattern": ["mold remediation", "mold protocol"],
+      "category": null,
+      "quantity_threshold": {"min": 10},
+      "description": "Mold exceeding 10 SF requires immediate adjuster contact, a mold protocol, and post-remediation clearance testing",
+      "severity": "info",
+      "reason": "If mold is discovered on any claim exceeding 10 square feet, the handling adjuster must be contacted immediately prior to repairs going further. Tower Hill requires a mold protocol prior to remediation of 10 sq ft or more and a clearance test post remediation.",
+      "recommendation": "Verify the handling adjuster was contacted, a mold protocol was followed, and a post-remediation clearance test is documented.",
+      "guideline_reference": "Page 13"
+    },
+    {
+      "rule_id": "THIG_OBS_004",
+      "item_pattern": ["itel"],
+      "category": null,
+      "description": "Kitchen cabinets and tile roofing should use the ITEL Now Phone App",
+      "severity": "info",
+      "reason": "Use of the Itel Now Phone App is recommended for kitchen cabinets and tile roofing. There is no minimum square footage requirement to complete an evaluation.",
+      "recommendation": "Verify the ITEL Now Phone App was used for this kitchen cabinet or tile roofing item.",
+      "guideline_reference": "Page 12"
+    },
+    {
+      "rule_id": "THIG_OBS_005",
+      "item_pattern": ["upper tier", "premium grade", "luxury grade"],
+      "category": null,
+      "description": "Upper tier material use requires a first-use justification note and photo documentation",
+      "severity": "info",
+      "reason": "It is required that on the first use of upper tier materials the user notes the reason for appropriateness, and that photo documentation is obtained to support the use of the upper tier.",
+      "recommendation": "Verify a justification note and supporting photo documentation exist for this upper tier material.",
+      "guideline_reference": "Page 21"
+    },
+    {
+      "rule_id": "THIG_OBS_006",
+      "item_pattern": ["labor hour"],
+      "category": null,
+      "description": "Labor hours to revise/supplement a line-item cost require special-circumstance adjuster acceptance",
+      "severity": "info",
+      "reason": "Labor hours to revision/supplement line-item cost are not permitted by default. It is at the discretion of the handling adjuster to accept labor hours only in special circumstances.",
+      "recommendation": "Verify this labor hour charge was accepted by the handling adjuster as a special circumstance.",
+      "guideline_reference": "Page 10"
+    },
+    {
+      "rule_id": "THIG_OBS_007",
+      "item_pattern": ["minimum charge", "labor minimum", "min charge"],
+      "duplicate_across_estimate_by_category": true,
+      "description": "Only one minimum charge is allowed per trade per estimate",
+      "severity": "info",
+      "reason": "Minimum charges cannot be duplicated in multiple rooms in a single estimate - only one minimum per trade per estimate is allowed. A patch is considered a minimum charge.",
+      "recommendation": "Verify this isn't a duplicate minimum charge for this trade elsewhere in the estimate - only one per trade is allowed.",
+      "guideline_reference": "Page 9"
+    }
+  ],
+
+  "notes": [
+    "Estimating platform is Symbility/CoreLogic, not Xactimate - line items don't use Xactimate's 2-4 letter CAT-code prefix (WTR, PNT, DRY, etc.); instead they read like 'Tear Out - Shower Unit, Custom Good' or 'Replace - Roof Deck Seam Tape, 4\"'. extract_estimate_with_ocr.py's parsing regex (line-start pattern, room-boundary 'Totals:' pattern, CODE_PREFIX_CATEGORIES) is built entirely around Xactimate's format and has not been verified against a real Symbility PDF - very likely needs rework before a THIG estimate extracts correctly. Waiting on a real sample estimate from Eric to verify and fix.",
+    "Customer service, code of conduct, availability/response-time SLAs (24hr/72hr/7-day timers), AOB prohibition, lien handling, public adjuster/attorney contact rules, and Quality Assurance warranty terms (Pages 3-5) are all conduct/workflow requirements with no line-item representation - not encoded.",
+    "Interior diagrams should include all openings (cabinetry, windows, doors) with blocks utilized for cabinetry (Page 8) - already covered by this tool's carrier-agnostic GEN_ROOM_DOORWINDOW and GEN_ROOM_SKETCH_BLOCKS structural checks, which apply automatically to every carrier including THIG. No THIG-specific rule needed.",
+    "Depreciation handling (75% max, applied to unit cost, fences always non-recoverable) isn't encoded - this tool doesn't extract per-item depreciation percentage from estimates.",
+    "Coverage-level coding (Coverage A/B/Ordinance & Law/Limited Fungi - e.g. re-nailing roof sheathing should be Ordinance & Law not Coverage A) isn't checked - this tool doesn't currently extract the Coverage field, though Symbility estimates do show it as its own column per the sample screenshots.",
+    "Building code line items being improperly used as their own supporting documentation (Page 10) isn't encoded as a pattern rule - too ambiguous to distinguish from a legitimate code-driven line item without false positives.",
+    "Assignment-type-specific fee schedules (Estimate Only Fee Schedule Page 16; Catastrophe tarping fee table Page 18; commercial payment process Page 20) aren't encoded - this tool has no way to tell an 'estimate only' or 'CAT' assignment apart from a normal reconstruction estimate.",
+    "Fire loss handling specifics (Pages 22-24): two separate estimates required for Coverage A cleaning vs. rebuild, ITEL pricing shown as zero dollars until secured for flooring/tile roofing/cabinetry, and 'any line item not supported with photographs will be removed' - not encoded, since distinguishing 'ITEL still pending' from 'ITEL already received' isn't possible from a point-in-time estimate snapshot, and photo support isn't present in the estimate PDF at all.",
+    "Mobile Claims/ESTIMATE software preference and print-profile settings (Pages 25-51) are entirely Symbility/CoreLogic UI configuration, not estimate content - out of scope.",
+    "2021 Code Ordinance & Law roofing requirements (Pages 52-53, 56) and the wind-borne debris region / roof-decking-nailing statute Q&A (Pages 52-53) describe a detailed conditional decision tree (Ice & Water Shield documented vs. not, decking nailed to code vs. not) that isn't derivable from line-item text alone - not encoded as automated rules.",
+    "Florida Condominium Insurance Coverage table (Pages 58-59) is coverage-eligibility reference material (who insures what between Association and Unit Owner) rather than a billing rule for a single estimate - reference only, not encoded."
+  ]
+}
