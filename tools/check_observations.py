@@ -203,6 +203,55 @@ def check_structural_room_observations(room_index):
     return observations
 
 
+def check_estimate_level_observations(line_items, observation_rules):
+    """Checks that need to see every line item in the estimate at once,
+    not just one room - e.g. flagging more than one 'minimum charge' item
+    for the same trade/category anywhere in the estimate. This is a
+    genuinely different shape than the room-scoped duplicate_if_room_contains
+    mechanism, which only ever compares items within a single room."""
+    observations = []
+
+    for rule in observation_rules:
+        if not rule.get('duplicate_across_estimate_by_category'):
+            continue
+
+        item_patterns = rule.get('item_pattern', [])
+        matches_by_category = {}
+
+        for item in line_items:
+            description = item['description'].lower()
+            is_match = any(
+                fuzz.partial_ratio(pattern.lower(), description) > 75
+                for pattern in item_patterns
+            )
+            if is_match:
+                category = item.get('category') or 'OTHER'
+                matches_by_category.setdefault(category, []).append(item)
+
+        for category, matched_items in matches_by_category.items():
+            if len(matched_items) <= 1:
+                continue
+
+            # First occurrence is the legitimate one; flag every duplicate
+            # after it for that same trade/category.
+            for duplicate_item in matched_items[1:]:
+                observations.append({
+                    'line_item': duplicate_item['line_number'],
+                    'description': duplicate_item['description'],
+                    'category': duplicate_item.get('category', 'OTHER'),
+                    'total': duplicate_item.get('total', 0),
+                    'rule_id': rule['rule_id'],
+                    'observation_type': rule['description'],
+                    'severity': rule.get('severity', 'info'),
+                    'reason': rule['reason'],
+                    'recommendation': rule['recommendation'],
+                    'guideline_reference': rule.get('guideline_reference', 'N/A'),
+                    'matched_pattern': None,
+                })
+
+    return observations
+
+
 def check_observations(line_item, observation_rules, estimate_id, room_index=None):
     """Check if a line item has observations worth noting."""
     observations = []
@@ -266,14 +315,29 @@ def check_observations(line_item, observation_rules, estimate_id, room_index=Non
             if not has_duplicate_context(line_item, room_index, duplicate_rule):
                 match_found = False
 
-        # Only fires when the item's own extracted quantity meets a minimum -
-        # e.g. "ITEL required on flooring replacements of 144 SF or more".
-        # Assumes the rule's item_pattern already scopes this to items where
-        # quantity is a meaningful SF/unit measure (e.g. flooring materials).
+        # Only fires when the item's own extracted quantity meets a minimum
+        # and/or stays under a maximum - e.g. "ITEL required on flooring
+        # replacements of 144 SF or more" (min) or "damage of 100 SF or less
+        # should be referred to Nativo" (max). Assumes the rule's
+        # item_pattern already scopes this to items where quantity is a
+        # meaningful SF/unit measure (e.g. flooring materials).
         quantity_threshold = rule.get('quantity_threshold')
         if match_found and quantity_threshold:
             item_quantity = line_item.get('quantity', 0)
             if item_quantity < quantity_threshold.get('min', 0):
+                match_found = False
+            if match_found and 'max' in quantity_threshold and item_quantity > quantity_threshold['max']:
+                match_found = False
+
+        # Same idea as quantity_threshold, but gated on the item's dollar
+        # total instead - e.g. "tree removal subcontractor bids over $7,500
+        # need adjuster pre-approval".
+        dollar_threshold = rule.get('dollar_threshold')
+        if match_found and dollar_threshold:
+            item_total = line_item.get('total', 0)
+            if item_total < dollar_threshold.get('min', 0):
+                match_found = False
+            if match_found and 'max' in dollar_threshold and item_total > dollar_threshold['max']:
                 match_found = False
 
         if match_found:
@@ -349,6 +413,10 @@ def main():
         # Carrier-agnostic room-level checks (door/window presence, etc.) -
         # always run, independent of which carrier's rules were loaded.
         all_observations.extend(check_structural_room_observations(room_index))
+
+        # Estimate-wide checks (e.g. duplicate minimum charges per trade)
+        # that need to see all line items at once, not just one room.
+        all_observations.extend(check_estimate_level_observations(line_items, observation_rules))
 
         # Create output structure
         output_data = {
