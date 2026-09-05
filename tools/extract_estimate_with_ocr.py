@@ -76,6 +76,91 @@ def is_text_based_pdf(pdf_path):
         return False
 
 
+SYMBILITY_ITEM_PATTERN = re.compile(
+    r'^(\d+)\s+(.+?)\s+([\d,]+(?:\.\d+)?)\s+\$([\d,]+\.\d{2})\s+([A-Za-z]{1,4})\s+\$([\d,]+\.\d{2})\s*$'
+)
+
+
+def is_symbility_format(text):
+    """Detect Symbility/CoreLogic-style estimates (e.g. THIG/CastleCare
+    reports), which lay out line items completely differently from
+    Xactimate: single-line items with '$' before both the unit price and
+    total ("Toilet, Two-Piece, Good - Rem/Reset 1 $306.71 EA $306.71"), no
+    leading CAT-code prefix on the description, and room names declared
+    BEFORE their items via a Length/Width/Height block rather than a
+    trailing 'Totals:' line.
+
+    Checked line by line rather than as one re.search over the whole text -
+    SYMBILITY_ITEM_PATTERN anchors on ^/$, which without re.MULTILINE only
+    matches the very start/end of the entire string, not each line."""
+    return any(SYMBILITY_ITEM_PATTERN.match(line.strip()) for line in text.split('\n'))
+
+
+def extract_line_items_from_symbility_text(text, estimate_id):
+    """Extract line items from a Symbility/CoreLogic-formatted estimate.
+
+    Room name is the line immediately before its "Length: ... Width: ...
+    Height: ..." dimension block (confirmed against a real THIG/CastleCare
+    export - every room in that sample followed this exact layout), or,
+    for a room continued onto a later page, the line ending in "(con't)"
+    (with or without a space before the parenthesis - both appear in real
+    exports). Recap/materials/labor summary sections that follow the last
+    room are skipped entirely, since e.g. the labor breakdown ("1
+    DRYWALLER ~26.95 hrs $113.85 $3,066.81") also starts with a digit but
+    isn't a line item.
+    """
+    line_items = []
+    lines = text.split('\n')
+
+    dimension_pattern = re.compile(r'^Length:\s')
+    continuation_pattern = re.compile(r"^(.+?)\s*\(con't\)\s*$")
+    summary_section_starts = ('Recap by', 'MATERIALS', 'LABOR', 'FLOORPLAN: Floor Plan')
+
+    current_room = 'Unknown'
+    in_summary_section = False
+
+    for i, raw_line in enumerate(lines):
+        line = raw_line.strip()
+        if not line:
+            continue
+
+        if line.startswith(summary_section_starts):
+            in_summary_section = True
+        if in_summary_section:
+            continue
+
+        if dimension_pattern.match(line) and i > 0:
+            candidate = lines[i - 1].strip()
+            if candidate:
+                current_room = candidate
+            continue
+
+        continuation_match = continuation_pattern.match(line)
+        if continuation_match:
+            current_room = continuation_match.group(1).strip()
+            continue
+
+        item_match = SYMBILITY_ITEM_PATTERN.match(line)
+        if item_match:
+            line_num, description, quantity, unit_price, unit, total = item_match.groups()
+            description = description.strip()
+            try:
+                line_items.append({
+                    'line_number': int(line_num),
+                    'description': description,
+                    'quantity': float(quantity.replace(',', '')),
+                    'unit': unit,
+                    'unit_price': float(unit_price.replace(',', '')),
+                    'total': float(total.replace(',', '')),
+                    'category': categorize_line_item(description),
+                    'room': current_room,
+                })
+            except (ValueError, IndexError):
+                pass
+
+    return line_items
+
+
 def extract_line_items_from_text(text, estimate_id):
     """Extract line items from text using regex patterns."""
     line_items = []
@@ -218,22 +303,62 @@ def categorize_line_item(description):
     if code and code in CODE_PREFIX_CATEGORIES:
         return CODE_PREFIX_CATEGORIES[code]
 
-    desc_upper = description.upper()
-
     categories = {
-        'DRYWALL': ['DRY', 'DRYWALL', 'SHEETROCK', 'GYPSUM'],
+        # Bare 'DRY' deliberately excluded here (and from MITIGATION below)
+        # - it's a substring of "Dryer" (APPLIANCES), which Symbility
+        # descriptions spell out in full English rather than an Xactimate
+        # code, unlike the CODE_PREFIX_CATEGORIES 'DRY' entry above, which
+        # only matches at the very start of the description. Bare 'AC' is
+        # excluded from HVAC for the same reason - it's a substring of
+        # ordinary words like "Backerboard" or "surface".
+        'DRYWALL': ['DRYWALL', 'SHEETROCK', 'GYPSUM', 'TEXTURE'],
         'PAINTING': ['PAINT', 'PNT', 'PRIME', 'SEAL'],
-        'FLOORING': ['CARPET', 'FLOOR', 'VINYL', 'TILE', 'HARDWOOD', 'LAMINATE'],
+        'CABINETRY': ['CABINET', 'VANITY'],
+        'DOORS': ['DOOR'],
+        'FLOORING': ['CARPET', 'FLOOR', 'VINYL PLANK', 'TILE', 'HARDWOOD', 'LAMINATE', 'UNDERLAYMENT, FOAM'],
         'ROOFING': ['ROOF', 'SHINGLE', 'FLASHING', 'UNDERLAYMENT'],
-        'PLUMBING': ['PLB', 'PLUMB', 'PIPE', 'FIXTURE', 'FAUCET'],
+        'PLUMBING': ['PLB', 'PLUMB', 'PIPE', 'FIXTURE', 'FAUCET', 'TOILET', 'VALVE', 'P-TRAP', 'BATHTUB'],
+        # Checked before ELECTRICAL: "Dryer, Electric, Standard" names the
+        # power source as a plain adjective, not the electrical trade -
+        # ELECTRICAL's 'ELECT' keyword would otherwise catch it first.
+        'APPLIANCES': ['DRYER', 'WASHER', 'APPLIANCE'],
         'ELECTRICAL': ['ELC', 'ELECT', 'WIRE', 'OUTLET', 'SWITCH'],
-        'HVAC': ['HVAC', 'DUCT', 'FURNACE', 'AC', 'AIR COND'],
+        'HVAC': ['HVAC', 'DUCT', 'FURNACE', 'AIR COND'],
+        'WINDOWS': ['BLINDS', 'WINDOW TREATMENT'],
+        'INSULATION': ['INSULATION'],
+        'TRIM': ['BASE MOLDING', 'QUARTER ROUND', 'CASING'],
         'DEMOLITION': ['DEMO', 'REMOVE', 'RMV', 'TEAR OUT'],
-        'MITIGATION': ['MITIGATION', 'DRY', 'EXTRACT', 'DEHUMID'],
+        'MITIGATION': ['MITIGATION', 'EXTRACT', 'DEHUMID'],
         'CLEANING': ['CLEAN', 'CLN'],
+        'CONTENTS': ['CONTENT MANIPULATION'],
         'GENERAL': ['LABOR', 'LAB', 'MINIMUM', 'MIN']
     }
 
+    # Symbility-style descriptions put the actual operation at the end,
+    # after the last " - " (e.g. "Drywall/Plaster Wall - Prime & Paint" is
+    # a painting operation on a drywall surface, not a drywall install).
+    # The portion before that dash is a material/spec description that can
+    # itself contain misleading terms - e.g. "Quarter Round, Paint Grade -
+    # Tear Out" names a trim grade, not a paint action, so scanning the
+    # whole string for "PAINT" would wrongly categorize it as painting.
+    # When an action suffix exists, use it (and only it) to detect a paint
+    # operation, then scan just the material portion - skipping PAINTING's
+    # own keywords - for everything else.
+    if ' - ' in description:
+        noun_part, action_suffix = description.rsplit(' - ', 1)
+        if 'PAINT' in action_suffix.upper() or 'SEAL' in action_suffix.upper():
+            return 'PAINTING'
+
+        noun_upper = noun_part.upper()
+        for category, keywords in categories.items():
+            if category == 'PAINTING':
+                continue
+            for keyword in keywords:
+                if keyword in noun_upper:
+                    return category
+        return 'OTHER'
+
+    desc_upper = description.upper()
     for category, keywords in categories.items():
         for keyword in keywords:
             if keyword in desc_upper:
@@ -267,6 +392,18 @@ def extract_summary_totals(text):
             value = match.group(1).replace(',', '')
             summary[key] = float(value)
 
+    # Symbility exports end with an authoritative "Estimate Total: $X" line
+    # (after tax, O&P, deductible). The generic 'Total'/'Subtotal' pattern
+    # above grabs the FIRST such match in the document, which for
+    # Symbility is a single room's own "<Room> - Subtotal $X" line, not
+    # the real total - override with the actual final total when present.
+    estimate_total_matches = re.findall(r'Estimate Total:\s*\$?([\d,]+\.\d{2})', text, re.IGNORECASE)
+    if estimate_total_matches:
+        total_value = float(estimate_total_matches[-1].replace(',', ''))
+        summary['line_item_total'] = total_value
+        summary['overhead'] = 0
+        summary['profit'] = 0
+
     return summary
 
 
@@ -280,16 +417,27 @@ def extract_metadata(text, pdf_path):
         'has_paul_davis_header': bool(re.search(r'paul\s+davis', text, re.IGNORECASE))
     }
 
-    # Try to extract metadata from text
-    client_match = re.search(r'(?:Insured|Name|Client)[:\s]+(.+)', text, re.IGNORECASE)
+    # Try to extract metadata from text. "Insured: Name (phone)..." is a
+    # clean, reliable pattern where it appears (e.g. THIG/Symbility desk
+    # adjuster notes) - checked first. The generic fallback intentionally
+    # excludes newlines from the connective whitespace: with a bare \s,
+    # "...INSURED\nPolicy No.: W027828140 Ray Kwilos" (a two-column header
+    # table, where "INSURED" is just a section label with no value on its
+    # own line) would match across the line break and capture the WRONG
+    # column's text as the client name.
+    client_match = re.search(r'Insured:\s*([^\n(]+?)\s*(?:\(|\n)', text)
     if client_match:
         metadata['client'] = client_match.group(1).strip()
+    else:
+        client_match = re.search(r'(?:Insured|Name|Client)[ \t:]+(.+)', text, re.IGNORECASE)
+        if client_match:
+            metadata['client'] = client_match.group(1).strip()
 
     date_match = re.search(r'(?:Date|Estimate\s+Date)[:\s]+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})', text, re.IGNORECASE)
     if date_match:
         metadata['date'] = date_match.group(1).strip()
 
-    address_match = re.search(r'(?:Address|Loss\s+Address)[:\s]+(.+)', text, re.IGNORECASE)
+    address_match = re.search(r'(?:Address|Loss\s+Address)[ \t:]+(.+)', text, re.IGNORECASE)
     if address_match:
         metadata['address'] = address_match.group(1).strip()
 
@@ -340,9 +488,17 @@ def main():
         # Extract estimate ID from filename
         estimate_id = Path(pdf_path).stem
 
-        # Extract line items
+        # Extract line items - Symbility/CoreLogic estimates (e.g. THIG/
+        # CastleCare) use a completely different line-item layout than
+        # Xactimate, so detect the format from the text itself rather than
+        # assuming based on carrier, since other future carriers may also
+        # use either platform.
         print("\nExtracting line items...")
-        line_items = extract_line_items_from_text(full_text, estimate_id)
+        if is_symbility_format(full_text):
+            print("Detected Symbility/CoreLogic format")
+            line_items = extract_line_items_from_symbility_text(full_text, estimate_id)
+        else:
+            line_items = extract_line_items_from_text(full_text, estimate_id)
 
         # Extract metadata
         metadata = extract_metadata(full_text, pdf_path)

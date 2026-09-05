@@ -214,11 +214,11 @@
     {
       "rule_id": "THIG_OBS_004",
       "item_pattern": ["itel"],
-      "category": null,
-      "description": "Kitchen cabinets and tile roofing should use the ITEL Now Phone App",
+      "category": "CABINETRY",
+      "description": "Kitchen cabinets should use the ITEL Now Phone App",
       "severity": "info",
-      "reason": "Use of the Itel Now Phone App is recommended for kitchen cabinets and tile roofing. There is no minimum square footage requirement to complete an evaluation.",
-      "recommendation": "Verify the ITEL Now Phone App was used for this kitchen cabinet or tile roofing item.",
+      "reason": "Use of the Itel Now Phone App is recommended for kitchen cabinets (also recommended for tile roofing, not checked here since roofing items aren't reliably distinguishable from flooring/shower tile by keyword alone). There is no minimum square footage requirement to complete an evaluation.",
+      "recommendation": "Verify the ITEL Now Phone App was used for this kitchen cabinet item.",
       "guideline_reference": "Page 12"
     },
     {
